@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "esModuleInterop": true,
+        "module": "commonjs",
+        "declaration": true,
+        "sourceMap": true,
+        "noEmitOnError": true,
+        "removeComments": true,
+        "target": "es2015",
+    },
+    "exclude": ["node_modules"]
+}

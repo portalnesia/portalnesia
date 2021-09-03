@@ -1,0 +1,29 @@
+{
+  "name": "@portalnesia/utils",
+  "version": "1.0.0",
+  "description": "Utility for Portalnesia",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build":"tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/portalnesia/portalnesia.git"
+  },
+  "keywords": [
+    "utility",
+    "nodejs",
+    "javascript",
+    "typescript"
+  ],
+  "author": "Putu Aditya <aditya@portalnesia.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/portalnesia/portalnesia/issues"
+  },
+  "homepage": "https://github.com/portalnesia/portalnesia#readme",
+  "devDependencies": {
+    "typescript": "^4.4.2"
+  }
+}
