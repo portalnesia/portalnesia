@@ -1,23 +1,98 @@
+/**
+ * Clean text format
+ * @param text: text to clean
+ * @returns string
+ */
 export declare const clean: (text: string) => string;
+/**
+ * Check is object empty?
+ * @param obj objeck to check
+ * @returns boolean
+ */
 export declare const isEmptyObj: (obj: object) => boolean;
 export declare const monthNames: string[];
 export declare const monthNamesEn: string[];
+/**
+ * Escape HTML string (& to &amp;)
+ * @param text HTML to escape
+ * @param withQuote if true, quote or double quote not escaped
+ * @returns escaped string
+ */
 export declare const escapeHTML: (text: string, withQuote: boolean) => string;
+export declare const stripHTML: (text?: string) => string;
+/**
+ * Convert special characters to HTML entities
+ * @param text String being converted
+ * @returns string
+ */
 export declare const specialHTML: (text: string) => string;
 export declare const parseURL: (url: string) => string;
+/**
+ * Uppercase the first character of each word in a string
+ * @param text Input string
+ * @param func if set, invoke function after text being converted
+ * @returns string|void
+ */
 export declare const ucwords: (text: string, func?: (str: string) => void) => string | void;
+/**
+ * convertTextToJsStyles
+ * @param text
+ * @param func if set, invoke function after text being converted
+ * @returns string|void
+ */
 export declare const jsStyles: (text: string, func?: (str: string) => void) => string | void;
+/**
+ * Get first characters of each word
+ * @param text
+ * @param number max word
+ * @param func
+ * @returns
+ */
 export declare const firstLetter: (text: string, number?: number, func?: (str: string) => void) => string | void;
+/**
+ * Convert URL to only domain
+ * @param url
+ * @returns
+ */
 export declare const urlToDomain: (url: string) => string;
 export declare const replaceAt: (text: string, index: number, replacement: string) => string;
+/**
+ * Truncate string
+ * @param text string being truncated
+ * @param num maximum character
+ * @returns string
+ */
 export declare const truncate: (text: string, num: number) => string;
 export declare const splice: (text: string, idx: number, rem: number, str: string) => string;
+/**
+ * Convert string to slug-url-format
+ * @param text
+ * @param func
+ * @param lowercase
+ * @returns
+ */
 export declare const slugFormat: (text: string, func?: (result: string) => void, lowercase?: boolean) => string | void;
 export declare function copyTextBrowser(text: string): Promise<void>;
 export declare const toBlob: (b64Data: string, contentType: string, sliceSize?: number) => Blob;
-export declare const number_size: (bytes: number | null | undefined, precision: number) => string;
-export declare const generateRandom: () => string;
-export declare const numberFormat: (angka: string, separate: string) => string;
+/**
+ * Convert byte to kilobyte, megabyte, ...
+ * @param bytes
+ * @param precision
+ * @returns
+ */
+export declare const number_size: (bytes: number | null | undefined, precision?: number) => string;
+/**
+ * Generate random string
+ * @param number maximum string being generated
+ * @returns
+ */
+export declare const generateRandom: (number?: number) => string;
+export declare const numberFormat: (angka: string, separate?: string) => string;
+/**
+ * Convert second to "time ago" format
+ * @param seconds
+ * @returns
+ */
 export declare const time_ago: (seconds: number) => string;
 export declare const insertElementAfter: (newNode: HTMLElement, referenceNode: HTMLElement) => void;
 export declare const acronym: (text: string, len?: number) => string;
