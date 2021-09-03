@@ -1,6 +1,6 @@
 {
   "name": "@portalnesia/utils",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Utility for Portalnesia",
   "main": "index.js",
   "types": "index.d.ts",
@@ -23,7 +23,7 @@
   "bugs": {
     "url": "https://github.com/portalnesia/portalnesia/issues"
   },
-  "homepage": "https://github.com/portalnesia/portalnesia#readme",
+  "homepage": "https://portalnesia.com",
   "devDependencies": {
     "typescript": "^4.4.2"
   }
