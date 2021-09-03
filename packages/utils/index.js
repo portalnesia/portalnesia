@@ -9,7 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isTwitterURL = exports.isURL = exports.randomInt = exports.extractMeta = exports.listToMatrix = exports.adddesc = exports.addslashes = exports.separateNumber = exports.acronym = exports.insertElementAfter = exports.time_ago = exports.numberFormat = exports.generateRandom = exports.number_size = exports.toBlob = exports.copyTextBrowser = exports.slugFormat = exports.splice = exports.truncate = exports.replaceAt = exports.urlToDomain = exports.firstLetter = exports.jsStyles = exports.ucwords = exports.parseURL = exports.specialHTML = exports.escapeHTML = exports.monthNamesEn = exports.monthNames = exports.isEmptyObj = exports.clean = void 0;
+exports.isTwitterURL = exports.isURL = exports.randomInt = exports.extractMeta = exports.listToMatrix = exports.adddesc = exports.addslashes = exports.separateNumber = exports.acronym = exports.insertElementAfter = exports.time_ago = exports.numberFormat = exports.generateRandom = exports.number_size = exports.toBlob = exports.copyTextBrowser = exports.slugFormat = exports.splice = exports.truncate = exports.replaceAt = exports.urlToDomain = exports.firstLetter = exports.jsStyles = exports.ucwords = exports.parseURL = exports.specialHTML = exports.stripHTML = exports.escapeHTML = exports.monthNamesEn = exports.monthNames = exports.isEmptyObj = exports.clean = void 0;
+/**
+ * Clean text format
+ * @param text: text to clean
+ * @returns string
+ */
 const clean = (text) => {
     if (typeof text !== 'string')
         return '';
@@ -17,6 +22,11 @@ const clean = (text) => {
     return text;
 };
 exports.clean = clean;
+/**
+ * Check is object empty?
+ * @param obj objeck to check
+ * @returns boolean
+ */
 const isEmptyObj = (obj) => {
     for (let key in obj) {
         if (obj.hasOwnProperty(key))
@@ -29,6 +39,12 @@ exports.monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
     "Juli", "Agustus", "September", "Oktober", "November", "Desember"
 ];
 exports.monthNamesEn = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+/**
+ * Escape HTML string (& to &amp;)
+ * @param text HTML to escape
+ * @param withQuote if true, quote or double quote not escaped
+ * @returns escaped string
+ */
 const escapeHTML = (text, withQuote) => {
     if (typeof text !== 'string' || text.match(/\S/) === null)
         return '';
@@ -55,6 +71,17 @@ const escapeHTML = (text, withQuote) => {
     return text.replace(/[&<>"']/g, function (m) { return map[m]; });
 };
 exports.escapeHTML = escapeHTML;
+const stripHTML = (text = '') => {
+    if (typeof text !== 'string' || text.match(/\S/) === null)
+        return '';
+    return text.replace(/<[^>]*>?/gm, '').replace(/\&\#xA0\;/gm, ' ');
+};
+exports.stripHTML = stripHTML;
+/**
+ * Convert special characters to HTML entities
+ * @param text String being converted
+ * @returns string
+ */
 const specialHTML = (text) => {
     if (typeof text !== 'string' || text.match(/\S/) === null)
         return '';
@@ -77,6 +104,12 @@ const parseURL = (url) => {
     return parserr.replace("www.", "");
 };
 exports.parseURL = parseURL;
+/**
+ * Uppercase the first character of each word in a string
+ * @param text Input string
+ * @param func if set, invoke function after text being converted
+ * @returns string|void
+ */
 const ucwords = function (text, func) {
     if (typeof text !== 'string')
         return '';
@@ -89,6 +122,12 @@ const ucwords = function (text, func) {
         return str;
 };
 exports.ucwords = ucwords;
+/**
+ * convertTextToJsStyles
+ * @param text
+ * @param func if set, invoke function after text being converted
+ * @returns string|void
+ */
 const jsStyles = function (text, func) {
     if (typeof text !== 'string')
         return '';
@@ -112,6 +151,13 @@ const jsStyles = function (text, func) {
         return str;
 };
 exports.jsStyles = jsStyles;
+/**
+ * Get first characters of each word
+ * @param text
+ * @param number max word
+ * @param func
+ * @returns
+ */
 const firstLetter = function (text, number, func) {
     if (typeof text !== 'string')
         return '';
@@ -126,6 +172,11 @@ const firstLetter = function (text, number, func) {
         return str;
 };
 exports.firstLetter = firstLetter;
+/**
+ * Convert URL to only domain
+ * @param url
+ * @returns
+ */
 const urlToDomain = function (url) {
     let parser = new URL((url.match(/http(s)?/) ? url : `http://${url}`));
     const parserr = parser.hostname;
@@ -136,6 +187,12 @@ const replaceAt = function (text, index, replacement) {
     return text.substr(0, index) + replacement + text.substr(index + replacement.length);
 };
 exports.replaceAt = replaceAt;
+/**
+ * Truncate string
+ * @param text string being truncated
+ * @param num maximum character
+ * @returns string
+ */
 const truncate = function (text, num) {
     if (typeof text !== 'string')
         return '';
@@ -148,6 +205,13 @@ const splice = function (text, idx, rem, str) {
     return text.slice(0, idx) + str + text.slice(idx + Math.abs(rem));
 };
 exports.splice = splice;
+/**
+ * Convert string to slug-url-format
+ * @param text
+ * @param func
+ * @param lowercase
+ * @returns
+ */
 const slugFormat = function (text, func, lowercase) {
     if (typeof text !== 'string')
         return '';
@@ -194,9 +258,8 @@ function copyTextBrowser(text) {
 }
 exports.copyTextBrowser = copyTextBrowser;
 ;
-const toBlob = (b64Data, contentType, sliceSize) => {
+const toBlob = (b64Data, contentType, sliceSize = 512) => {
     contentType = contentType || '';
-    sliceSize = sliceSize || 512;
     const byteCharacters = atob(b64Data);
     const byteArrays = [];
     for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
@@ -212,8 +275,13 @@ const toBlob = (b64Data, contentType, sliceSize) => {
     return blob;
 };
 exports.toBlob = toBlob;
-const number_size = (bytes, precision) => {
-    precision = precision || 2;
+/**
+ * Convert byte to kilobyte, megabyte, ...
+ * @param bytes
+ * @param precision
+ * @returns
+ */
+const number_size = (bytes, precision = 2) => {
     if (typeof bytes !== 'number' || bytes === 0 || bytes === null)
         return '-';
     const units = ['B', 'KB', 'MB', 'GB', 'TB'];
@@ -223,18 +291,34 @@ const number_size = (bytes, precision) => {
     bytes /= Math.pow(1024, pow);
     const factorOfTen = Math.pow(10, precision);
     const parsed = Math.round(bytes * factorOfTen) / factorOfTen;
+    //const parsed=Number(Math.round(bytes + "e" + decimalPlaces) + "e-" + precision)
     return parsed + ' ' + units[pow];
 };
 exports.number_size = number_size;
-const generateRandom = () => {
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+/**
+ * Generate random string
+ * @param number maximum string being generated
+ * @returns
+ */
+const generateRandom = (number = 10) => {
+    let result = '';
+    const charLength = CHARS.length;
+    for (let i = 0; i < number; i++) {
+        result += CHARS.charAt(Math.floor(Math.random() * charLength));
+    }
+    return result;
 };
 exports.generateRandom = generateRandom;
-const numberFormat = (angka, separate) => {
-    separate = separate || ".";
+const numberFormat = (angka, separate = ".") => {
     return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separate);
 };
 exports.numberFormat = numberFormat;
+/**
+ * Convert second to "time ago" format
+ * @param seconds
+ * @returns
+ */
 const time_ago = (seconds) => {
     let interval = Math.floor(seconds / 31536000);
     if (interval > 1) {

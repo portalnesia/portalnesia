@@ -1,9 +1,19 @@
+/**
+ * Clean text format
+ * @param text: text to clean
+ * @returns string
+ */
 export const clean=(text: string): string=>{
     if(typeof text!=='string') return '';
     text=text.replace(/<script[^>]*>([\s\S]*?)<\/script[^>]*>/i, '').replace(/(<([^>]+)>)/ig,""); 
     return text;
 }
-  
+
+/**
+ * Check is object empty?
+ * @param obj objeck to check
+ * @returns boolean
+ */
 export const isEmptyObj=(obj: object): boolean=>{
     for(let key in obj) {
         if(obj.hasOwnProperty(key)) return false;
@@ -16,7 +26,13 @@ export const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni
 ]
   
 export const monthNamesEn=["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  
+
+/**
+ * Escape HTML string (& to &amp;)
+ * @param text HTML to escape
+ * @param withQuote if true, quote or double quote not escaped
+ * @returns escaped string
+ */
 export const escapeHTML=(text: string,withQuote: boolean): string=>{
     if(typeof text!=='string' || text.match(/\S/) === null) return '';
     let map: {[key: string]: string};
@@ -40,7 +56,17 @@ export const escapeHTML=(text: string,withQuote: boolean): string=>{
     }
     return text.replace(/[&<>"']/g, function(m) { return map[m]; });
 }
-  
+
+export const stripHTML=(text='')=>{
+    if(typeof text!=='string' || text.match(/\S/) === null) return '';
+    return text.replace(/<[^>]*>?/gm,'').replace(/\&\#xA0\;/gm,' ');
+}
+
+/**
+ * Convert special characters to HTML entities
+ * @param text String being converted
+ * @returns string
+ */
 export const specialHTML=(text: string): string=>{
     if(typeof text!=='string' || text.match(/\S/) === null) return '';
     const map: {[key: string]: string} = {
@@ -53,14 +79,20 @@ export const specialHTML=(text: string): string=>{
     };
     return text.replace(/(\&amp\;|\&lt\;|\&gt\;|\&quot\;|\&\#039\;|\&nbsp\;)/g, function(m){return map[m]});
 }
-  
+
 export const parseURL=(url: string): string=>{
     if(typeof url!=='string') return '';
     const parser=new URL((url.match(/http(s)?/)?url:`http://${url}`));
     const parserr=`${parser.hostname}${parser.pathname}${parser.search}`;
     return parserr.replace("www.", "");
 }
-  
+
+/**
+ * Uppercase the first character of each word in a string
+ * @param text Input string
+ * @param func if set, invoke function after text being converted
+ * @returns string|void
+ */
 export const ucwords=function(text: string,func?: (str: string)=>void){
     if(typeof text!=='string') return '';
     const str=text.toLowerCase().replace(/\b[a-z]/g, function(letter) {
@@ -69,7 +101,13 @@ export const ucwords=function(text: string,func?: (str: string)=>void){
     if(typeof func === 'function') return func(str);
     else return str;
 }
-  
+
+/**
+ * convertTextToJsStyles
+ * @param text 
+ * @param func if set, invoke function after text being converted
+ * @returns string|void
+ */
 export const jsStyles=function(text: string,func?: (str: string)=>void){
     if(typeof text!=='string') return '';
     let str=text.toLowerCase();
@@ -89,7 +127,14 @@ export const jsStyles=function(text: string,func?: (str: string)=>void){
     if(typeof func === 'function') return func(str);
     else return str;
 } 
-  
+
+/**
+ * Get first characters of each word
+ * @param text 
+ * @param number max word
+ * @param func 
+ * @returns 
+ */
 export const firstLetter=function(text: string,number?: number,func?: (str: string)=>void){
     if(typeof text!=='string') return '';
     let str=text.toLowerCase().replace(/\b([a-z])(\S*)/g, function(a,b) {
@@ -99,17 +144,29 @@ export const firstLetter=function(text: string,number?: number,func?: (str: stri
     if(typeof func === 'function') return func(str);
     else return str;
 } 
-  
+
+/**
+ * Convert URL to only domain
+ * @param url 
+ * @returns 
+ */
 export const urlToDomain=function(url: string): string{
     let parser=new URL((url.match(/http(s)?/)?url:`http://${url}`));
     const parserr=parser.hostname;
     return parserr.replace("www.", "");
 }
-  
+
+
 export const replaceAt=function(text: string,index: number, replacement: string): string {
     return text.substr(0, index) + replacement+ text.substr(index + replacement.length);
 };
-  
+
+/**
+ * Truncate string
+ * @param text string being truncated
+ * @param num maximum character
+ * @returns string
+ */
 export const truncate=function(text: string,num: number): string {
     if(typeof text!=='string') return '';
     return (text.length <= num)?text:text.slice(0, num) + '...';
@@ -119,7 +176,14 @@ export const splice = function(text: string,idx: number, rem: number, str: strin
     if(typeof text!=='string') return '';
     return text.slice(0, idx) + str + text.slice(idx + Math.abs(rem));
 };
-  
+
+/**
+ * Convert string to slug-url-format
+ * @param text 
+ * @param func 
+ * @param lowercase 
+ * @returns 
+ */
 export const slugFormat = function (text: string,func?: (result: string)=>void,lowercase?: boolean): string|void {
     if(typeof text!=='string') return '';
     lowercase=typeof lowercase==='boolean'&&lowercase===true;
@@ -161,9 +225,8 @@ export async function copyTextBrowser(text: string){
     }
 };
   
-export const toBlob=(b64Data: string, contentType: string, sliceSize?: number): Blob=>{
+export const toBlob=(b64Data: string, contentType: string, sliceSize=512): Blob=>{
     contentType = contentType || '';
-    sliceSize = sliceSize || 512;
     const byteCharacters = atob(b64Data);
     const byteArrays: Array<Uint8Array> = [];
     for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
@@ -178,9 +241,14 @@ export const toBlob=(b64Data: string, contentType: string, sliceSize?: number): 
     const blob = new Blob(byteArrays, {type: contentType});
     return blob;
 };
-  
-export const number_size=(bytes: number|null|undefined,precision: number): string=>{
-    precision = precision || 2;
+
+/**
+ * Convert byte to kilobyte, megabyte, ...
+ * @param bytes 
+ * @param precision 
+ * @returns 
+ */
+export const number_size=(bytes: number|null|undefined,precision=2): string=>{
     if(typeof bytes !== 'number' || bytes===0 || bytes===null) return '-';
     const units = ['B', 'KB', 'MB', 'GB', 'TB'];
     bytes=Math.max(bytes,0);
@@ -193,15 +261,31 @@ export const number_size=(bytes: number|null|undefined,precision: number): strin
     return parsed+' '+units[pow];
 }
   
-export const generateRandom=(): string=>{
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+/**
+ * Generate random string
+ * @param number maximum string being generated
+ * @returns 
+ */
+export const generateRandom=(number=10)=>{
+    let result='';
+    const charLength = CHARS.length;
+    for (let i = 0; i < number; i++) {
+        result += CHARS.charAt(Math.floor(Math.random() * charLength))
+    }
+    return result;
 }
-  
-export const numberFormat = (angka: string,separate: string): string=>{
-    separate=separate||".";
+
+export const numberFormat = (angka: string,separate="."): string=>{
     return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separate);
 };
-  
+
+/**
+ * Convert second to "time ago" format
+ * @param seconds 
+ * @returns 
+ */
 export const time_ago=(seconds: number): string=>{
     let interval = Math.floor(seconds / 31536000);
     if (interval > 1) {
