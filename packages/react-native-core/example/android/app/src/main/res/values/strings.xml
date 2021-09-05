@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Portalnesia Example</string>
+    <string name="portalnesia_verification_key">verification key</string>
+    <string name="portalnesia_recaptcha_key">recaptcha key</string>
+</resources>

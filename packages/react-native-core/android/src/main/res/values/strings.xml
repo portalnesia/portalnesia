@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="portalnesia_verification_key">verification_key</string>
+    <string name="portalnesia_recaptcha_key">recaptcha_key</string>
+</resources>
