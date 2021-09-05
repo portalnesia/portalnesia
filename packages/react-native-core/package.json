@@ -1,7 +1,7 @@
 {
   "name": "@portalnesia/react-native-core",
   "title": "@portalnesia/react-native-core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Portalnesia core native modules",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,7 +9,10 @@
     "README.md",
     "android",
     "dist",
-    "jestSetup.js"
+    "jestSetup.js",
+    ".gitignore",
+    ".npmignore",
+    "tsconfig.json"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
