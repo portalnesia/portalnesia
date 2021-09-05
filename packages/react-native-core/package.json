@@ -1,18 +1,24 @@
 {
   "name": "@portalnesia/react-native-core",
   "title": "@portalnesia/react-native-core",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Portalnesia core native modules",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "README.md",
+    "./README.md",
     "android",
     "dist",
     "jestSetup.js",
     ".gitignore",
     ".npmignore",
-    "tsconfig.json"
+    "!android/build",
+    "!android/gradle",
+    "!build",
+    "!gradlew",
+    "!gradlew.bat",
+    "!android/README.md",
+    "!android/gradle.properties"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

@@ -13,6 +13,10 @@ yarn-error.log
 build/
 android/build/
 android/build/**/*
+android/gradle/
+gradlew
+gradlew.bat
+android/gradle.properties
 .idea
 .gradle
 local.properties
