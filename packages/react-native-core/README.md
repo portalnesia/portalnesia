@@ -137,7 +137,9 @@ export default class App extends Component {
 ### Method
 
 - ### `Core.isAppInstalled(packageName: string): Promise<boolean>`
-    Check if the application is installed on the device
+    Check if the application is installed on the device.
+
+    **Note**: From Android 11 (API 30), you might need to declare `<queries>` in your manifest, depending on what package you're looking for. Check out [the docs](https://developer.android.com/training/package-visibility) for more info.
 
     ### Arguments
     - packageName (*string*) -- the package name of the application that you want to check
