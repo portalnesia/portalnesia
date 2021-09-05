@@ -11,6 +11,8 @@ yarn-error.log
 # Android/IntelliJ
 #
 build/
+android/build/
+android/build/**/*
 .idea
 .gradle
 local.properties
@@ -23,3 +25,4 @@ buck-out/
 
 src/
 example/
+android/README.md
