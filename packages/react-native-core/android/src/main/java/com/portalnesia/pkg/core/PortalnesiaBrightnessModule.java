@@ -33,10 +33,13 @@ public class PortalnesiaBrightnessModule extends ReactContextBaseJavaModule {
         if(activity == null) {
             return;
         }
-        activity.runOnUiThread(() -> {
-            WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
-            lp.screenBrightness = brightness;
-            activity.getWindow().setAttributes(lp);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
+                lp.screenBrightness = brightness;
+                activity.getWindow().setAttributes(lp);
+            }
         });
     }
 

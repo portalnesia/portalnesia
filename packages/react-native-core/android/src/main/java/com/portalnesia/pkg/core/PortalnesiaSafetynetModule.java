@@ -11,6 +11,10 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.safetynet.SafetyNet;
+import com.google.android.gms.safetynet.SafetyNetApi;
+import com.google.android.gms.tasks.OnCanceledListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 public class PortalnesiaSafetynetModule extends ReactContextBaseJavaModule {
     public static String REACT_CLASS = "PortalnesiaSafetynet";
@@ -40,18 +44,31 @@ public class PortalnesiaSafetynetModule extends ReactContextBaseJavaModule {
     public void getVerification(String nonceString, final Promise promise) {
         final String apiKey = reactContext.getString(R.string.portalnesia_verification_key);
         byte[] nonce = nonceString.getBytes();
+
         SafetyNet.getClient(reactContext).attest(nonce,apiKey)
-        .addOnSuccessListener(response -> {
-            String result = response.getJwsResult();
-            promise.resolve(result);
+        .addOnSuccessListener(new OnSuccessListener<SafetyNetApi.AttestationResponse>() {
+            @Override
+            public void onSuccess(@NonNull SafetyNetApi.AttestationResponse attestationResponse) {
+                String result = attestationResponse.getJwsResult();
+                promise.resolve(result);
+            }
         })
-        .addOnFailureListener(e -> {
-            if(e instanceof ApiException) {
-                ApiException apiException = (ApiException) e;
-                int statusCode = apiException.getStatusCode();
-                promise.reject(Integer.toString(statusCode), CommonStatusCodes.getStatusCodeString(statusCode),e);
-            } else {
-                promise.reject(e);
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                if(e instanceof ApiException) {
+                    ApiException apiException = (ApiException) e;
+                    int statusCode = apiException.getStatusCode();
+                    promise.reject(Integer.toString(statusCode), CommonStatusCodes.getStatusCodeString(statusCode),e);
+                } else {
+                    promise.reject(e);
+                }
+            }
+        })
+        .addOnCanceledListener(new OnCanceledListener() {
+            @Override
+            public void onCanceled() {
+                promise.reject("CANCEL","Operation cancelled");
             }
         });
     }
@@ -59,18 +76,31 @@ public class PortalnesiaSafetynetModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void verifyWithRecaptcha(final Promise promise) {
         String apiKey = reactContext.getString(R.string.portalnesia_recaptcha_key);
+
         SafetyNet.getClient(reactContext).verifyWithRecaptcha(apiKey)
-        .addOnSuccessListener(response -> {
-            String token = response.getTokenResult();
-            promise.resolve(token);
+        .addOnSuccessListener(new OnSuccessListener<SafetyNetApi.RecaptchaTokenResponse>() {
+            @Override
+            public void onSuccess(@NonNull SafetyNetApi.RecaptchaTokenResponse recaptchaTokenResponse) {
+                String token = recaptchaTokenResponse.getTokenResult();
+                promise.resolve(token);
+            }
         })
-        .addOnFailureListener(e -> {
-            if(e instanceof ApiException) {
-                ApiException apiException = (ApiException) e;
-                int statusCode = apiException.getStatusCode();
-                promise.reject(Integer.toString(statusCode), CommonStatusCodes.getStatusCodeString(statusCode),e);
-            } else {
-                promise.reject(e);
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                if(e instanceof ApiException) {
+                    ApiException apiException = (ApiException) e;
+                    int statusCode = apiException.getStatusCode();
+                    promise.reject(Integer.toString(statusCode), CommonStatusCodes.getStatusCodeString(statusCode),e);
+                } else {
+                    promise.reject(e);
+                }
+            }
+        })
+        .addOnCanceledListener(new OnCanceledListener() {
+            @Override
+            public void onCanceled() {
+                promise.reject("CANCEL","Operation cancelled");
             }
         });
     }

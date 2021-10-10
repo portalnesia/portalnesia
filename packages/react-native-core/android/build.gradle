@@ -48,8 +48,8 @@ android {
     defaultConfig {
         minSdkVersion safeExtGet('minSdkVersion', DEFAULT_MIN_SDK_VERSION)
         targetSdkVersion safeExtGet('targetSdkVersion', DEFAULT_TARGET_SDK_VERSION)
-        versionCode 1
-        versionName "1.0.0"
+        versionCode 3
+        versionName "1.0.5"
     }
     lintOptions {
         abortOnError false
@@ -67,8 +67,8 @@ repositories {
         // Android JSC is installed from npm
         url "$rootDir/../node_modules/jsc-android/dist"
     }
+    jcenter()
     google()
-    mavenCentral()
 }
 
 dependencies {
@@ -76,8 +76,6 @@ dependencies {
     implementation 'com.facebook.react:react-native:+'  // From node_modules
     implementation "androidx.core:core:1.6.0"
     implementation "com.google.android.gms:play-services-safetynet:17.0.1"
-    implementation "com.google.android.gms:play-services-auth:19.2.0"
-
 }
 
 def configureReactNativePom(def pom) {
