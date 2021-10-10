@@ -68,7 +68,9 @@ Add `Recaptcha Site key` to your strings.xml `/android/app/src/main/res/values/s
 ```
 
 ### Custom Android Notification Icon
-If you want to change the notification icon. Add your icon to project resources mipmap folder `/android/app/src/main/res/mipmap...`.
+If you want to change the notification icon. Add your icon to project resources mipmap folder `/android/app/src/main/res/mipmap...`
+
+Rename icon file to `ic_portalnesia_notification_icon`
 
 Make sure you follow <a href="https://material.io/design/iconography/product-icons.html#design-principles" target="_blank">Google's design guidelines</a> (the icon must be all white with a transparent background) or else it may not be displayed as intended.
 
