@@ -38,40 +38,40 @@ export interface PortalnesiaCoreInterface extends PortalnesiaCoreNativeInterface
     removeEventListener(type:'localizationChange',handler: Function): void;
 }
 
-const Core: PortalnesiaCoreInterface = {
-    initialLocalization:CoreNative.initialLocalization,
-    SUPPORTED_ABIS:CoreNative.SUPPORTED_ABIS,
-    isAppInstalled(packageName: string) {
+module Core {
+    export const initialLocalization = CoreNative.initialLocalization;
+    export const SUPPORTED_ABIS=CoreNative.SUPPORTED_ABIS;
+    export function isAppInstalled(packageName: string) {
         return CoreNative.isAppInstalled(packageName);
-    },
-    openDownloadManager() {
+    }
+    export function openDownloadManager() {
         return CoreNative.openDownloadManager();
-    },
-    getAction() {
+    }
+    export function getAction() {
         return CoreNative.getAction();
-    },
-    exitApp() {
+    }
+    export function exitApp() {
         return CoreNative.exitApp();
-    },
+    }
     /**
      * Get current country ("US","ID",...)
      * @returns string
      */
-    getCountry() {
+    export function getCountry() {
         return constants.country;
-    },
+    }
     /**
      * Get list of locales in devices
     */
-    getLocales() {
+     export function getLocales() {
         return constants.locales
-    },
-    addEventListener(type: 'localizationChange', handler: Function) {
+    }
+    export function addEventListener(type: 'localizationChange', handler: Function) {
         if(type === 'localizationChange') {
             handlers.add(handler);
         }
-    },
-    removeEventListener(type:'localizationChange',handler: Function) {
+    }
+    export function removeEventListener(type:'localizationChange',handler: Function) {
         if(type === 'localizationChange') {
             handlers.delete(handler)
         }

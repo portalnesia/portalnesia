@@ -59,16 +59,16 @@ public class PortalnesiaSafetynetModule extends ReactContextBaseJavaModule {
                 if(e instanceof ApiException) {
                     ApiException apiException = (ApiException) e;
                     int statusCode = apiException.getStatusCode();
-                    promise.reject(Integer.toString(statusCode), CommonStatusCodes.getStatusCodeString(statusCode),e);
+                    promise.reject("PortalnesiaSafetynetError", CommonStatusCodes.getStatusCodeString(statusCode),e);
                 } else {
-                    promise.reject(e);
+                    promise.reject("PortalnesiaSafetynetError",e);
                 }
             }
         })
         .addOnCanceledListener(new OnCanceledListener() {
             @Override
             public void onCanceled() {
-                promise.reject("CANCEL","Operation cancelled");
+                promise.reject("PortalnesiaCancel","Operation cancelled");
             }
         });
     }
@@ -91,16 +91,16 @@ public class PortalnesiaSafetynetModule extends ReactContextBaseJavaModule {
                 if(e instanceof ApiException) {
                     ApiException apiException = (ApiException) e;
                     int statusCode = apiException.getStatusCode();
-                    promise.reject(Integer.toString(statusCode), CommonStatusCodes.getStatusCodeString(statusCode),e);
+                    promise.reject("PortalnesiaSafetynetError", CommonStatusCodes.getStatusCodeString(statusCode),e);
                 } else {
-                    promise.reject(e);
+                    promise.reject("PortalnesiaSafetynetError",e);
                 }
             }
         })
         .addOnCanceledListener(new OnCanceledListener() {
             @Override
             public void onCanceled() {
-                promise.reject("CANCEL","Operation cancelled");
+                promise.reject("PortalnesiaCancel","Operation cancelled");
             }
         });
     }

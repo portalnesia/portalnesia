@@ -1,6 +1,6 @@
 import {NativeModules,NativeModulesStatic} from 'react-native'
 
-export interface PortalnesiaFilesInterface {
+export interface PortalnesiaFiles {
     /**
      * @argument
      * location: filepath with file://
@@ -15,5 +15,5 @@ export interface PortalnesiaFilesInterface {
      removeUriPermission(saf: string): Promise<void>;
 }
 
-const {PortalnesiaFile:Files} = <{PortalnesiaFile:PortalnesiaFilesInterface} & NativeModulesStatic>NativeModules
+const {PortalnesiaFile:Files} = <{PortalnesiaFile:PortalnesiaFiles} & NativeModulesStatic>NativeModules
 export default Files;

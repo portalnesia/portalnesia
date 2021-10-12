@@ -1,8 +1,8 @@
-import Brightness from './brightness'
-import Files from './files'
-import Safetynet from './safetynet'
-import Core from './core'
-import Notification from './notification'
+import PNBrightness from './brightness'
+import PNFiles from './files'
+import PNSafetynet from './safetynet'
+import PNCore from './core'
+import PNNotification from './notification'
 
 export * from './brightness'
 export * from './core'
@@ -10,12 +10,12 @@ export * from './files'
 export * from './safetynet'
 export * from './notification'
 
-const Portalnesia = {
-    Brightness,
-    Files,
-    Safetynet,
-    Core,
-    Notification
+module Portalnesia {
+    export const Brightness = PNBrightness;
+    export const Files = PNFiles;
+    export const Safetynet = PNSafetynet;
+    export const Core = PNCore;
+    export const Notification = PNNotification;
 }
 
 export default Portalnesia;

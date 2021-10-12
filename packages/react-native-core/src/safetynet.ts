@@ -1,6 +1,6 @@
 import {NativeModules,NativeModulesStatic} from 'react-native'
 
-export interface PortalnesiaSafetynetInterface {
+export interface PortalnesiaSafetynet {
     isGooglePlayServicesAvailable(): Promise<boolean>;
     /**
      * Get device verification
@@ -15,6 +15,6 @@ export interface PortalnesiaSafetynetInterface {
     verifyWithRecaptcha(): Promise<string>;
 }
 
-const {PortalnesiaSafetynet:Safetynet} = <{PortalnesiaSafetynet:PortalnesiaSafetynetInterface} & NativeModulesStatic>NativeModules
+const {PortalnesiaSafetynet:Safetynet} = <{PortalnesiaSafetynet:PortalnesiaSafetynet} & NativeModulesStatic>NativeModules
 
 export default Safetynet;

@@ -47,7 +47,7 @@ public class PortalnesiaBrightnessModule extends ReactContextBaseJavaModule {
     public void getBrightness(Promise promise){
         final Activity activity = getCurrentActivity();
         if(activity == null) {
-            promise.reject("ERROR","Activity is null");
+            promise.reject("PortalnesiaBrightnessError","Activity is null");
             return;
         }
         WindowManager.LayoutParams lp = activity.getWindow().getAttributes();

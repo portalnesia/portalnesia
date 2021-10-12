@@ -88,7 +88,7 @@ public class PortalnesiaCoreModule extends ReactContextBaseJavaModule {
     public void getAction(final Promise promise){
         Activity activity = getCurrentActivity();
         if(activity == null) {
-            promise.reject("ERROR","Activity is null");
+            promise.reject("PortalnesiaCoreError","Activity is null");
             return;
         }
         Intent intent = activity.getIntent();

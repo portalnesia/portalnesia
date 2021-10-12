@@ -45,7 +45,7 @@ public class PortalnesiaFileModule extends ReactContextBaseJavaModule {
             String path = getPath(reactContext,docUri);
             promise.resolve(path);
         } catch(Throwable e) {
-            promise.reject(e);
+            promise.reject("PortalnesiaFileError",e);
         }
     }
 
@@ -59,7 +59,7 @@ public class PortalnesiaFileModule extends ReactContextBaseJavaModule {
             }
             promise.resolve(result);
         } catch(Throwable e) {
-            promise.reject(e);
+            promise.reject("PortalnesiaFileError",e);
         }
     }
 
@@ -70,7 +70,7 @@ public class PortalnesiaFileModule extends ReactContextBaseJavaModule {
             reactContext.getContentResolver().releasePersistableUriPermission(uri,Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             promise.resolve(null);
         } catch(Throwable e) {
-            promise.reject(e);
+            promise.reject("PortalnesiaFileError",e);
         }
     }
 
@@ -87,7 +87,7 @@ public class PortalnesiaFileModule extends ReactContextBaseJavaModule {
             activity.startActivity(intent);
             promise.resolve(null);
         } catch(Throwable e) {
-            promise.reject(e);
+            promise.reject("PortalnesiaFileError",e);
         }
     }
 

@@ -2,5 +2,15 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.portalnesia.pkg.core">
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
+    <application>
+        <service android:name=".HeadlessNotificationServices"/>
+        <receiver android:name=".NotificationReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="com.portalnesia.NOTIFICATION_ACTION" />
+            </intent-filter>
+        </receiver>
+    </application>
 </manifest>

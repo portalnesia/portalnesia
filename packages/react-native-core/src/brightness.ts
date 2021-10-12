@@ -1,6 +1,6 @@
 import {NativeModules,NativeModulesStatic} from 'react-native'
 
-export interface PortalnesiaBrightnessInterface {
+export interface PortalnesiaBrightness {
     getBrightness():Promise<number>;
     /**
      * Set device brightness
@@ -10,6 +10,6 @@ export interface PortalnesiaBrightnessInterface {
     getSystemBrightness(): Promise<number>;
 }
 
-const {PortalnesiaBrightness:Brightness} = <{PortalnesiaBrightness:PortalnesiaBrightnessInterface} & NativeModulesStatic>NativeModules
+const {PortalnesiaBrightness:Brightness} = <{PortalnesiaBrightness:PortalnesiaBrightness} & NativeModulesStatic>NativeModules
 
 export default Brightness;

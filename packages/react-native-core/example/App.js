@@ -9,7 +9,7 @@
  */
 
 import React, {Component} from 'react';
-import {Alert, StyleSheet, Text, View, Pressable} from 'react-native';
+import {Alert, StyleSheet, Text, View, Pressable, ToastAndroid} from 'react-native';
 import Portalnesia from '@portalnesia/react-native-core';
 
 export default class App extends Component {
@@ -87,14 +87,44 @@ export default class App extends Component {
         title: 'Tes',
         body: 'Tes body notification',
         autoCancel: true,
+        messages:{
+          title:"Portalnesia",
+          label:"Reply",
+          extra:{
+            token:"example_token",
+            sender:"putuaditya_sid",
+          },
+          message:[
+            {sender:"putuaditya_sid",time:new Date("10/10/2021 10:10:10").getTime(),text:"Hai...",image:"https://content.portalnesia.com/img/content?watermark=no&image=images%2F2021%2F6162040187bbd_28ffbb25-99e0-4de5-bc93-7d31744e2083jpg.jpg"},
+            {sender:"Portalnesia",time:new Date("10/10/2021 15:10:10").getTime(),text:"Iya halo..."},
+            {sender:"putuaditya_sid",time:new Date().getTime(),text:"Siapa dimana?",image:"https://content.portalnesia.com/img/content?watermark=no&image=images%2F2021%2F6162040187bbd_28ffbb25-99e0-4de5-bc93-7d31744e2083jpg.jpg"}
+          ]
+        },
+        priority:Portalnesia.Notification.PRIORITY_HIGH,
+        action:[
+          {
+            label:"Mark as read",
+            key:"mark_as_read",
+            extra:{
+              token:"example_token",
+              sender:"Portalnesia"
+            }
+          }
+        ]
       });
     } catch (e) {
-      Alert.alert('Error', e.message, [{text: 'OK', onPress: () => {}}]);
+      console.log(e);
+      //Alert.alert('Error', e.message, [{text: 'OK', onPress: () => {}}]);
     }
+  }
+  async handleIsActiveNotification() {
+    const active = await Portalnesia.Notification.isNotificationActive(1);
+    ToastAndroid.show(`Notification is ${active ? "active" : "not active"}`,ToastAndroid.LONG);
   }
   componentDidMount() {
     this.init();
   }
+  
   render() {
     return (
       <View style={styles.container}>
@@ -147,6 +177,12 @@ export default class App extends Component {
             android_ripple={{color: 'rgba(0,0,0,0.12', borderless: false}}
             onPress={() => this.handleNotification()}>
             <Text style={styles.button_text}>Notify</Text>
+          </Pressable>
+          <Pressable
+            style={styles.button}
+            android_ripple={{color: 'rgba(0,0,0,0.12', borderless: false}}
+            onPress={() => this.handleIsActiveNotification()}>
+            <Text style={styles.button_text}>Check Notification</Text>
           </Pressable>
           <Pressable
             style={styles.button}

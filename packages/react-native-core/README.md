@@ -265,16 +265,40 @@ export default class App extends Component {
 - ### `Notification.VISIBILITY_PRIVATE`
 - ### `Notification.VISIBILITY_PUBLIC`
 - ### `Notification.VISIBILITY_SECRET`
+- ### `Notification.HEADLESS_TASK`
+- ### `Notification.REPLY_KEY`
 
 ### Method
 
 - ### `Notification.notify(id: number, channel_id: string, options: NotificationOptions): Promise<void>`
     Show notification or update the notification.
+    ### **Note**
+    - If you set `messages` or `action` object, make sure you have [registered a handler](#handle-notification-action) to handle when the notification action is clicked.
+
 
     ### Arguments
     - id (*number*) -- Notification identifier. If you want update the existing notification, you can call again this function with same notificaion identifier.
     - channel_id (*string*) -- Notification Channel ID. Before you can deliver the notification on Android 8.0 and higher, you must register your app's notification channel.
-    - options (*object*) -- NotificationOptions object. For more detail, click [`NotificationOptions`](#notificationoptions).
+    - options (*object*) -- [`NotificationOptions`](#notificationoptions) object.
+
+- ### `addReplyNotification(id: number,message: NotificationMessagesReply): Promise<void>`
+    Adding new message to existing messaging style notification
+
+    ### Arguments
+    - id (*number*) -- Notification identifier.
+    - messages (*object*) -- [`NotificationMessagesReply`](#notificationmessagesreply) object
+
+- ### `errorReplyNotification(id: number): Promise<void>`
+    Update messaging style notification to stop loading. Example, if the reply action fails.
+
+    ### Arguments
+    - id (*number*) -- Notification identifier.
+
+- ### `isNotificationActive(id: number): Promise<boolean>`
+    Check if notification is on notification tray.
+
+    ### Arguments
+    - id (*number*) -- Notification identifier.
 
 - ### `Notification.cancel(id: number): void`
     Remove notification from notification tray
@@ -284,6 +308,42 @@ export default class App extends Component {
 
 - ### `Notification.cancelAll(): void`
     Remove all notifications from your application
+
+<br />
+
+## Handle Notification Action
+To handle notification action, like `reply` action button.
+Register a `HeadlessTask handler` in your root `index.js`
+
+```typescript
+AppRegistry.registerHeadlessTask(Portalnesia.Notification.HEADLESS_TASK, () => notificationHandler);
+```
+
+`handler` accept 1 argument with [`NotificationHandler`](#notificationhandler) type.
+
+Example,
+```typescript
+import {AppRegistry} from 'react-native';
+import App from './App';
+import {name as appName} from './app.json';
+import Portalnesia from '@portalnesia/react-native-core'
+
+const notificationHandler=async(notification: NotificationHandler)=>{
+    /*
+        notification: {
+            key,
+            notification_id,
+            messages,
+            extra
+        }
+    */
+    console.log(notification);
+    return Promise.resolve();
+}
+
+AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerHeadlessTask(Portalnesia.Notification.HEADLESS_TASK, () => notificationHandler);
+```
 
 <br />
 
@@ -312,8 +372,9 @@ export default class App extends Component {
 {
     /**
      * Title of notification
+     * Required if messages object is not set
      */
-    title: string;
+    title?: string;
     /**
      * Body of notification
      */
@@ -344,6 +405,123 @@ export default class App extends Component {
      * Will show notification silently
      */
     silent?: boolean;
+    /**
+     * Notification large icon
+     */
+    largeIcon?: string;
+    /**
+     * Notification large icon with expandable view
+     */
+    images?: string;
+    /**
+     * Notification Action
+     */
+    action?: NotificationActionType[];
+    /**
+     * Messaging style notification
+     */
+    messages: {
+        /**
+         * Sender name for current user
+         */
+        title: string,
+        /**
+         * Reply label for notification action
+         */
+        label: string,
+        /**
+         * Extra variable.
+         * This variable will be sending to headlesstask service when reply action clicked
+         */
+        extra?: Record<string,any>,
+        message: NotificationMessages[]
+    }
 }
 ```
 
+### `NotificationActionType`
+```typescript
+{
+    /**
+     * Action label for notification
+     */
+    label:string;
+    /**
+     * Action identifier
+     */
+    key: string;
+    /**
+     * Extra variable.
+     * This variable will be sending to headlesstask service when reply action clicked
+     */
+    extra?: Record<string,any>;
+}
+```
+
+### `NotificationMessages`
+```typescript
+{
+    /**
+     * Sender of message
+     * return same as title for message is sent by the current user (me)
+     */
+    sender:string;
+    /**
+     * Sender image
+     */
+    image?: string;
+    /**
+     * Message to be displayed
+     */
+    text: string;
+    /**
+     * Time at which the message arrived in ms
+     */
+    time: number,
+}
+```
+
+### `NotificationMessagesReply`
+```typescript
+{
+    /**
+     * Sender of message
+     * return same as title for message is sent by the current user (me)
+     */
+    sender:string;
+    /**
+     * Sender image
+     */
+    image?: string;
+    /**
+     * Message to be displayed
+     */
+    text: string;
+    /**
+     * Time at which the message arrived in ms
+     */
+    time?: number,
+}
+```
+
+### `NotificationHandler`
+```typescript
+{
+    /**
+     * Notification action key that clicked
+     */
+    key: string;
+    /**
+     * Notification id
+     */
+    notification_id: number;
+    /**
+     * Replied text message if key === Notification.REPLY_KEY
+     */
+    messages?: string;
+    /**
+     * Any extra params provided when call Notification.notify() function
+     */ 
+    extra?: Record<string,any>
+}
+```
