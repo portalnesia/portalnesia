@@ -21,12 +21,13 @@ interface NotificationWithTitleType {
 
 interface NotificationMessagesBasic {
     /**
-     * Sender of messages
+     * Unique sender username of messages
      * return same as title for messages by the current user
      */
     sender:string,
     /**
      * Sender image
+     * return same as title for messages by the current user
      */
     image?: string,
     /**
@@ -57,9 +58,13 @@ interface NotificationWithMessageType {
      */
     messages:{
         /**
-         * Sender name for current user
+         * Unique sender username for current user
          */
         title: string,
+        /**
+         * Sender image for current user
+         */
+        image?: string,
         /**
          * Reply label for notification action
          */
@@ -84,7 +89,7 @@ interface NotificationActionType {
     key: string,
     /**
      * Extra variable.
-     * This variable will be sending to headlesstask service when reply action clicked
+     * This variable will be sending to headlesstask service when action clicked
      */
     extra?: Record<string,any>,
 }

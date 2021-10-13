@@ -128,7 +128,15 @@ public class PortalnesiaNotificationModule extends ReactContextBaseJavaModule {
                 promise.reject("PortalnesiaNotificationError","Message array cannot be empty");
                 return;
             }
-            Person titlePerson = new Person.Builder().setKey(title).setName(msgOption.getString("title")).build();
+            Person.Builder titleBuilder = new Person.Builder().setKey(title).setName(title);
+            if(msgOption.hasKey("image")) {
+                Bitmap bitmap = Utils.getBitmap(msgOption.getString("image"));
+                if(bitmap != null) {
+                    IconCompat icon = IconCompat.createWithBitmap(bitmap);
+                    titleBuilder.setIcon(icon);
+                }
+            }
+            Person titlePerson = titleBuilder.build();
             NotificationCompat.MessagingStyle style = new NotificationCompat.MessagingStyle(titlePerson);
             for(int i=0; i < messages.size();i++) {
                 ReadableMap msg = messages.getMap(i);

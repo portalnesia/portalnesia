@@ -422,9 +422,13 @@ AppRegistry.registerHeadlessTask(Portalnesia.Notification.HEADLESS_TASK, () => n
      */
     messages: {
         /**
-         * Sender name for current user
+         * Unique sender username for current user
          */
         title: string,
+        /**
+         * Sender image for current user
+         */
+        image?: string,
         /**
          * Reply label for notification action
          */
@@ -452,7 +456,7 @@ AppRegistry.registerHeadlessTask(Portalnesia.Notification.HEADLESS_TASK, () => n
     key: string;
     /**
      * Extra variable.
-     * This variable will be sending to headlesstask service when reply action clicked
+     * This variable will be sending to headlesstask service when action clicked
      */
     extra?: Record<string,any>;
 }
@@ -462,12 +466,13 @@ AppRegistry.registerHeadlessTask(Portalnesia.Notification.HEADLESS_TASK, () => n
 ```typescript
 {
     /**
-     * Sender of message
-     * return same as title for message is sent by the current user (me)
+     * Unique sender username of messages
+     * return same as title for messages by the current user
      */
-    sender:string;
+    sender:string,
     /**
      * Sender image
+     * return same as title for messages by the current user
      */
     image?: string;
     /**
@@ -485,12 +490,13 @@ AppRegistry.registerHeadlessTask(Portalnesia.Notification.HEADLESS_TASK, () => n
 ```typescript
 {
     /**
-     * Sender of message
-     * return same as title for message is sent by the current user (me)
+     * Unique sender username of messages
+     * return same as title for messages by the current user
      */
-    sender:string;
+    sender:string,
     /**
      * Sender image
+     * return same as title for messages by the current user
      */
     image?: string;
     /**
