@@ -107,3 +107,4 @@ export declare const extractMeta: (file: string) => {
 export declare const randomInt: (total?: number) => number;
 export declare const isURL: (url: string) => boolean;
 export declare const isTwitterURL: (url: string) => boolean;
+export declare function firstToUpper(text: string): string;

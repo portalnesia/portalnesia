@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isTwitterURL = exports.isURL = exports.randomInt = exports.extractMeta = exports.listToMatrix = exports.adddesc = exports.addslashes = exports.separateNumber = exports.acronym = exports.insertElementAfter = exports.time_ago = exports.numberFormat = exports.generateRandom = exports.number_size = exports.toBlob = exports.copyTextBrowser = exports.slugFormat = exports.splice = exports.truncate = exports.replaceAt = exports.urlToDomain = exports.firstLetter = exports.jsStyles = exports.ucwords = exports.parseURL = exports.specialHTML = exports.stripHTML = exports.escapeHTML = exports.monthNamesEn = exports.monthNames = exports.isEmptyObj = exports.clean = void 0;
+exports.firstToUpper = exports.isTwitterURL = exports.isURL = exports.randomInt = exports.extractMeta = exports.listToMatrix = exports.adddesc = exports.addslashes = exports.separateNumber = exports.acronym = exports.insertElementAfter = exports.time_ago = exports.numberFormat = exports.generateRandom = exports.number_size = exports.toBlob = exports.copyTextBrowser = exports.slugFormat = exports.splice = exports.truncate = exports.replaceAt = exports.urlToDomain = exports.firstLetter = exports.jsStyles = exports.ucwords = exports.parseURL = exports.specialHTML = exports.stripHTML = exports.escapeHTML = exports.monthNamesEn = exports.monthNames = exports.isEmptyObj = exports.clean = void 0;
 /**
  * Clean text format
  * @param text: text to clean
@@ -408,4 +408,8 @@ const isTwitterURL = (url) => {
     return (url.trim().match(/twitter\.com/) !== null);
 };
 exports.isTwitterURL = isTwitterURL;
+function firstToUpper(text) {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+}
+exports.firstToUpper = firstToUpper;
 //# sourceMappingURL=index.js.map

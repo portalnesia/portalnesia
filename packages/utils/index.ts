@@ -373,3 +373,7 @@ export const isURL=(url:string)=>{
 export const isTwitterURL=(url:string)=>{
     return (url.trim().match(/twitter\.com/)!==null);
 }
+
+export function firstToUpper(text:string) {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+}
