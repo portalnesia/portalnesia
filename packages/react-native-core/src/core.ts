@@ -17,7 +17,7 @@ interface PortalnesiaCoreNativeInterface {
     isAppInstalled(packageName: string): Promise<boolean>;
     openDownloadManager(): void;
     getAction(): Promise<string>;
-    exitApp(): void;
+    restartApp(): Promise<void>
 }
 
 const {PortalnesiaCore:CoreNative} = <{PortalnesiaCore:PortalnesiaCoreNativeInterface} & NativeModulesStatic>NativeModules
@@ -50,8 +50,8 @@ module Core {
     export function getAction() {
         return CoreNative.getAction();
     }
-    export function exitApp() {
-        return CoreNative.exitApp();
+    export function restartApp(){
+        return CoreNative.restartApp();
     }
     /**
      * Get current country ("US","ID",...)

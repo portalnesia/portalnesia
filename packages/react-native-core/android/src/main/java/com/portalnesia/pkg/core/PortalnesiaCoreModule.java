@@ -50,20 +50,6 @@ public class PortalnesiaCoreModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void exitApp(){
-        Activity activity = getCurrentActivity();
-        if(activity == null) {
-            return;
-        }
-        activity.finishAndRemoveTask();
-        try {
-            System.exit(0);
-        } catch (Throwable ignored){
-
-        }
-    }
-
-    @ReactMethod
     public void isAppInstalled(String packageName, final Promise promise) {
         PackageManager pm = reactContext.getPackageManager();
         try {
@@ -93,6 +79,21 @@ public class PortalnesiaCoreModule extends ReactContextBaseJavaModule {
         }
         Intent intent = activity.getIntent();
         promise.resolve(intent.getAction());
+    }
+
+    @ReactMethod 
+    public void restartApp(Promise promise) {
+        Activity activity = getCurrentActivity();
+        if(activity == null) {
+            promise.reject("PortalnesiaCoreError","Activity is null");
+            return;
+        }
+        Intent i = reactContext.getPackageManager().getLaunchIntentForPackage(reactContext.getPackageName());
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        promise.resolve(null);
+        activity.startActivity(i);
+        activity.setResult(Activity.RESULT_OK);
+        activity.finish();
     }
 
     @Override

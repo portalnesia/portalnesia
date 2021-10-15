@@ -1,122 +1,100 @@
 import {NativeModules,NativeModulesStatic} from 'react-native'
 
-interface NotificationWithTitleType {
-    /**
-     * Title of notification
-     */
-    title: string;
-     /**
-      * Body of notification
-      */
-    body?:string;
-    /**
-     * If set, show progress in notification
-     */
-     progress?: {
-        max:number,
-        progress: number,
-        intermediate: boolean
-    };
+class NotificationError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = "PortalnesiaNotificationError";
+    }
 }
 
-interface NotificationMessagesBasic {
+export interface NotificationMessagesBasic {
     /**
      * Unique sender username of messages
      * return same as title for messages by the current user
      */
-    sender:string,
+    sender: string;
     /**
      * Sender image
      * return same as title for messages by the current user
      */
-    image?: string,
+    image?: string;
     /**
      * Message to be displayed
      */
-    text: string
+    text: string;
 }
-
 export interface NotificationMessages extends NotificationMessagesBasic {
     /**
      * Time at which the message arrived in ms
      */
-     time: number,
+    time: number;
 }
-
-interface NotificationMessagesReply extends NotificationMessagesBasic {
+export interface NotificationMessagesReply extends NotificationMessagesBasic {
     /**
      * Time at which the message arrived in ms
      */
-     time?: number,
+    time?: number;
 }
 
-
-
-interface NotificationWithMessageType {
+export interface NotificationMessageObject {
     /**
-     * Messaging style notification
-     */
-    messages:{
-        /**
          * Unique sender username for current user
          */
-        title: string,
-        /**
-         * Sender image for current user
-         */
-        image?: string,
-        /**
-         * Reply label for notification action
-         */
-        label: string,
-        /**
-         * Extra variable.
-         * This variable will be sending to headlesstask service when reply action clicked
-         */
-        extra?: Record<string,any>,
-        message: NotificationMessages[]
-    }
+     title: string;
+     /**
+      * Sender image for current user
+      */
+     image?: string;
+     /**
+      * Reply label for notification action
+      */
+     label: string;
+     /**
+      * Extra variable.
+      * This variable will be sending to headlesstask service when reply action clicked
+      */
+     extra?: Record<string, any>;
+     message: NotificationMessages[];
 }
 
-interface NotificationActionType {
+export interface NotificationActionType {
     /**
      * Action label for notification
      */
-    label:string,
+    label: string;
     /**
      * Action identifier
      */
-    key: string,
+    key: string;
     /**
      * Extra variable.
      * This variable will be sending to headlesstask service when action clicked
      */
-    extra?: Record<string,any>,
+    extra?: Record<string, any>;
 }
-
-interface NotificationBasicType {
+export interface NotificationOptions {
+    /**
+     * Title of notification
+     */
+     title?: string;
+     /**
+      * Body of notification
+      */
+     body?: string;
+     /**
+      * If set, show progress in notification
+      */
+     progress?: {
+         max: number;
+         progress: number;
+         intermediate: boolean;
+     };
     /**
      * deepurl when notification clicked
      */
     uri?: string;
-    /**
-     * Title of notification
-     */
-    title: string;
-    /**
-     * Body of notification
-     */
-    body?:string;
     visibility?: number;
     priority?: number;
-    /**
-     * If set, show progress in notification
-     */
-    progress?: {
-        max:number,
-        progress: number,
-        intermediate: boolean
-    };
     /**
      * If true, the notification will be removed when the user taps on it.
      */
@@ -140,9 +118,12 @@ interface NotificationBasicType {
     /**
      * Notification large icon with expandable view
      */
-    images?: string
+    images?: string;
+    /**
+     * Messaging style notification
+     */
+     messages?: NotificationMessageObject;
 }
-
 export interface NotificationHandler {
     /**
      * Notification action key that clicked
@@ -158,11 +139,9 @@ export interface NotificationHandler {
     messages?: string;
     /**
      * Any extra params provided when call Notification.notify() function
-     */ 
-    extra?: Record<string,any>
+     */
+    extra?: Record<string, any>;
 }
-
-export type NotificationOptions = NotificationBasicType & (NotificationWithMessageType | NotificationWithTitleType)
 
 export interface PortalnesiaNotificationInterface {
     notify(id: number, channel_id: string, options: NotificationOptions): Promise<void>;
@@ -190,7 +169,13 @@ module Notification {
      * @param channel_id Channel ID
      * @param options 
      */
-    export function notify(id: number, channel_id: string, options: NotificationOptions): Promise<void> {
+    export async function notify(id: number, channel_id: string, options: NotificationOptions): Promise<void> {
+        if(typeof id !== 'number') {
+            throw new NotificationError("ID cannot be empty");
+        }
+        if(!options?.title && !options?.messages) {
+            throw new NotificationError("options.title cannot be empty, if options.message is not set");
+        }
         return PortalnesiaNotification.notify(id, channel_id, options);
     }
     /**
@@ -199,6 +184,9 @@ module Notification {
      * @param message message object
      */
     export function addReplyNotification(id: number,message: NotificationMessagesReply): Promise<void> {
+        if(typeof id !== 'number' && !message) {
+            throw new NotificationError("ID and Message cannot be empty");
+        }
         return PortalnesiaNotification.addReplyNotification(id,message);
     }
     /**
@@ -206,6 +194,9 @@ module Notification {
      * @param id notification id
      */
     export function errorReplyNotification(id: number): Promise<void> {
+        if(typeof id !== 'number') {
+            throw new NotificationError("ID cannot be empty");
+        }
         return PortalnesiaNotification.errorReplyNotification(id);
     }
     /**
@@ -213,6 +204,9 @@ module Notification {
      * @param id Notification id
      */
     export function isNotificationActive(id: number): Promise<boolean> {
+        if(typeof id !== 'number') {
+            throw new NotificationError("ID cannot be empty");
+        }
         return PortalnesiaNotification.isNotificationActive(id);
     }
     /**
@@ -220,6 +214,9 @@ module Notification {
      * @param id notification id
      */
     export function cancel(id: number): void {
+        if(typeof id !== 'number') {
+            throw new NotificationError("ID cannot be empty");
+        }
         return PortalnesiaNotification.cancel(id);
     }
     /**
