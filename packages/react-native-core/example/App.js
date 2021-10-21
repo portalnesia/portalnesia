@@ -8,11 +8,11 @@
  * https://github.com/facebook/react-native
  */
 
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {Alert, StyleSheet, Text, View, Pressable, ToastAndroid} from 'react-native';
 import Portalnesia from '@portalnesia/react-native-core';
 
-export default class App extends Component {
+export default class App extends PureComponent {
   state = {
     abi: 'waiting',
     localization: 'waiting',
@@ -74,9 +74,30 @@ export default class App extends Component {
       this.setState({recaptcha: `Error: ${e?.message}`});
     }
   }
-  handleDownloadManager() {
+  handleExitApp() {
     try {
-      Portalnesia.Core.openDownloadManager();
+      Portalnesia.Core.exitApp();
+    } catch(e) {
+      console.log(e);
+    }
+  }
+  async handleDownloadManager() {
+    try {
+      const uri = "https://github.com/portalnesia/portalnesia-native/releases/download/v2.13.0/Portalnesia-arm64-v8a-v2.13.0.apk";
+      const title = "Portalnesia-arm64-v8a-v2.13.0.apk";
+      const desc = "Downloading...";
+      const id = await Portalnesia.Files.download({
+        title,
+        description:desc,
+        mimeType:"application/vnd.android.package-archive",
+        uri,
+        destination:{
+          type:Portalnesia.Files.DIRECTORY_DOWNLOADS,
+          path:title
+        },
+        channel_id:"default_notification_channel"
+      });
+      console.log("Download ID" ,id);
     } catch (e) {
       Alert.alert('Error', e.message, [{text: 'OK', onPress: () => {}}]);
     }
@@ -170,7 +191,7 @@ export default class App extends Component {
             style={styles.button}
             android_ripple={{color: 'rgba(0,0,0,0.12', borderless: false}}
             onPress={() => this.handleDownloadManager()}>
-            <Text style={styles.button_text}>Open Download Manager</Text>
+            <Text style={styles.button_text}>Download APK</Text>
           </Pressable>
           <Pressable
             style={styles.button}
@@ -183,6 +204,12 @@ export default class App extends Component {
             android_ripple={{color: 'rgba(0,0,0,0.12', borderless: false}}
             onPress={() => this.handleIsActiveNotification()}>
             <Text style={styles.button_text}>Check Notification</Text>
+          </Pressable>
+          <Pressable
+            style={styles.button}
+            android_ripple={{color: 'rgba(0,0,0,0.12', borderless: false}}
+            onPress={() => this.handleExitApp()}>
+            <Text style={styles.button_text}>Exit App</Text>
           </Pressable>
           <Pressable
             style={styles.button}

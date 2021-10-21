@@ -18,6 +18,7 @@ interface PortalnesiaCoreNativeInterface {
     openDownloadManager(): void;
     getAction(): Promise<string>;
     restartApp(): Promise<void>
+    exitApp(): Promise<void>;
 }
 
 const {PortalnesiaCore:CoreNative} = <{PortalnesiaCore:PortalnesiaCoreNativeInterface} & NativeModulesStatic>NativeModules
@@ -75,6 +76,10 @@ module Core {
         if(type === 'localizationChange') {
             handlers.delete(handler)
         }
+    }
+
+    export function exitApp() {
+        return CoreNative.exitApp();
     }
 }
 

@@ -161,6 +161,9 @@ export default class App extends Component {
 - ### `Core.restartApp(): void`
     Function to restart the application
 
+- ### `Core.exitApp(): void`
+    Function to exit the application
+
 - ### `Core.getCountry(): String`
     alias for `Core.initialLocalization.country`
 
@@ -232,6 +235,15 @@ export default class App extends Component {
 
 ## Files
 
+### Constants
+
+- ### `Files.DIRECTORY_DOWNLOADS`
+- ### `Files.DIRECTORY_MOVIES`
+- ### `Files.DIRECTORY_PICTURES`
+- ### `Files.DIRECTORY_MUSIC`
+
+### Method
+
 - ### `Files.openFolder(location: string): Promise<void>`
     Instructs the device to open a folder using the file manager
 
@@ -252,6 +264,17 @@ export default class App extends Component {
 
     #### Returns
     Return a promise that resolves to list of SAF uri. The returned array can be empty if you haven't requested SAF access
+
+- ### `Files.download(options: DownloadOptions): Promise<number>`
+    File downloader using Android download manager.
+
+    #### Arguments
+    - Options (*DownloadOptions*) -- [`DownloadOptions`](#downloadoptions) object.
+
+    #### Returns
+    Return a promise that resolves to download ID.
+
+<br />
 
 ## Notification
 
@@ -532,5 +555,42 @@ AppRegistry.registerHeadlessTask(Portalnesia.Notification.HEADLESS_TASK, () => n
      * Any extra params provided when call Notification.notify() function
      */ 
     extra?: Record<string,any>
+}
+```
+
+### `DownloadOptions`
+```typescript
+{
+    /**
+     * Download URL
+     */
+    uri: string;
+    /**
+     * File destination
+     */
+    destination:{
+        /**
+         * Public directory type
+         */
+        type: "Download" | "Movies" | "Pictures" | "Music",
+        /**
+         * Filename
+         */
+        path: string
+    }
+    mimeType: string;
+    headers: HeaderArray[];
+    /**
+     * Title for notification
+     */
+    title?: string;
+    /**
+     * Description for notification
+     */
+    description?:string;
+    /**
+     * Channel ID for completed notification
+     */
+    channel_id?:string;
 }
 ```

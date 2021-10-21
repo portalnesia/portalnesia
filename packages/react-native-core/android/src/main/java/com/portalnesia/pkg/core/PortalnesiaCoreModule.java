@@ -96,6 +96,18 @@ public class PortalnesiaCoreModule extends ReactContextBaseJavaModule {
         activity.finish();
     }
 
+    @ReactMethod
+    public void exitApp(Promise promise) {
+        Activity activity = getCurrentActivity();
+        if(activity == null) {
+            promise.reject("PortalnesiaCoreError","Activity is null");
+            return;
+        }
+        promise.resolve(null);
+        activity.setResult(Activity.RESULT_OK);
+        activity.finishAndRemoveTask();
+    }
+
     @Override
     public Map<String,Object> getConstants() {
         HashMap<String,Object> constants = new HashMap<>();

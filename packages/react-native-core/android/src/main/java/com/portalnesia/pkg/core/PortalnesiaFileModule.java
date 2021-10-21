@@ -1,9 +1,13 @@
 package com.portalnesia.pkg.core;
 
 import android.app.Activity;
+import android.app.DownloadManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.UriPermission;
 import android.database.Cursor;
 import android.net.Uri;
@@ -12,23 +16,42 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PortalnesiaFileModule extends ReactContextBaseJavaModule {
     public static final String REACT_CLASS = "PortalnesiaFile";
+    private final HashMap<Long,ReadableMap> completedMap = new HashMap<>();
 
     private final ReactApplicationContext reactContext;
 
     PortalnesiaFileModule(ReactApplicationContext context) {
         super(context);
         this.reactContext = context;
+    }
+
+    @Override
+    public void initialize() {
+        reactContext.registerReceiver(onDownloadComplete,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        reactContext.registerReceiver(onDownloadNotificationClick,new IntentFilter(DownloadManager.ACTION_NOTIFICATION_CLICKED));
+    }
+
+    @Override
+    public void onCatalystInstanceDestroy() {
+        reactContext.unregisterReceiver(onDownloadComplete);
+        reactContext.unregisterReceiver(onDownloadNotificationClick);
     }
 
     @NonNull
@@ -90,6 +113,120 @@ public class PortalnesiaFileModule extends ReactContextBaseJavaModule {
             promise.reject("PortalnesiaFileError",e);
         }
     }
+
+    /**
+     * {
+     *     title,
+     *     description,
+     *     uri,
+     *     destination {
+     *         type,
+     *         path
+     *     },
+     *     header [
+     *      [header,value]
+     *     ],
+     *     mimeType,
+     *     channel_id
+     * }
+     *
+     */
+    @ReactMethod
+    public void download(ReadableMap options, Promise promise) {
+        if(!options.hasKey("uri") || !options.hasKey("destination") || !options.hasKey("mimeType")) {
+            promise.reject("PortalnesiaFileError","Invalid options");
+            return;
+        }
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(options.getString("uri")));
+        String title = "Portalnesia";
+        if(options.hasKey("title")) {
+            title = options.getString("title");
+        }
+        request.setTitle(title);
+        if(options.hasKey("description")) {
+            String desc = options.getString("description");
+            assert desc != null;
+            request.setDescription(desc);
+        }
+        
+        request.setMimeType(options.getString("mimeType"));
+        if(options.hasKey("headers")) {
+            ReadableArray headers = options.getArray("headers");
+            // Foreach headers
+            if (headers != null) {
+                for(int i = 0; i< headers.size(); i++) {
+                    ReadableArray header = headers.getArray(i);
+                    assert header != null;
+                    request.addRequestHeader(header.getString(0),header.getString(1));
+                }
+            }
+        }
+        ReadableMap dest = options.getMap("destination");
+        assert dest != null;
+        String dirType = dest.getString("type");
+        String path = dest.getString("path");
+        request.setDestinationInExternalPublicDir(dirType,path);
+        DownloadManager dm = (DownloadManager) reactContext.getSystemService(Context.DOWNLOAD_SERVICE);
+        Long downloadID = dm.enqueue(request);
+        completedMap.put(downloadID,options);
+        promise.resolve(downloadID.doubleValue());
+    }
+
+    @Override
+    public Map<String,Object> getConstants() {
+        HashMap<String,Object> constants = new HashMap<>();
+        constants.put("DIRECTORY_DOWNLOADS",Environment.DIRECTORY_DOWNLOADS);
+        constants.put("DIRECTORY_MOVIES",Environment.DIRECTORY_MOVIES);
+        constants.put("DIRECTORY_PICTURES",Environment.DIRECTORY_PICTURES);
+        constants.put("DIRECTORY_MUSIC",Environment.DIRECTORY_MUSIC);
+        return constants;
+    }
+
+    private final BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID,-1);
+            if(completedMap.containsKey(id)) {
+                ReadableMap options = completedMap.get(id);
+                assert options != null;
+                if(options.hasKey("channel_id")) {
+                    String channel_id = options.getString("channel_id");
+                    assert channel_id != null;
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(context,channel_id);
+                    builder.setSmallIcon(R.mipmap.ic_portalnesia_notification_icon);
+                    int color = context.getResources().getColor(R.color.portalnesia_notification_color);
+                    builder.setColor(color);
+                    Intent openDownload = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
+                    openDownload.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    builder.setContentIntent(PendingIntent.getActivity(context,0,openDownload,PendingIntent.FLAG_CANCEL_CURRENT));
+                    builder.setAutoCancel(true);
+                    builder.setSilent(false);
+                    builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                    if(options.hasKey("title")) {
+                        String title = options.getString("title");
+                        builder.setContentTitle(title);
+                    }
+                    builder.setContentText("Download completed");
+                    NotificationManagerCompat manager = NotificationManagerCompat.from(context);
+                    manager.notify(id.intValue(),builder.build());
+                }
+                completedMap.remove(id);
+            }
+        }
+    };
+
+    private final BroadcastReceiver onDownloadNotificationClick = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                Intent new_intent = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
+                new_intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(new_intent);
+            } catch(Throwable ignored) {
+
+            }
+        }
+    };
 
     public static String getPath(final Context context, final Uri uri) {
         if(DocumentsContract.isDocumentUri(context,uri)) {
