@@ -20,7 +20,7 @@ export interface DownloadOptions {
         path: string
     }
     mimeType: string;
-    headers: HeaderArray[];
+    headers?: HeaderArray[];
     /**
      * Title for notification
      */
@@ -79,10 +79,10 @@ module Files {
         return PortalnesiaFile.download(options);
     }
 
-    export const DIRECTORY_DOWNLOADS = PortalnesiaFile.DIRECTORY_DOWNLOADS;
-    export const DIRECTORY_MOVIES = PortalnesiaFile.DIRECTORY_MOVIES;
-    export const DIRECTORY_PICTURES = PortalnesiaFile.DIRECTORY_PICTURES;
-    export const DIRECTORY_MUSIC = PortalnesiaFile.DIRECTORY_MUSIC;
+    export const DIRECTORY_DOWNLOADS = PortalnesiaFile.DIRECTORY_DOWNLOADS as "Download";
+    export const DIRECTORY_MOVIES = PortalnesiaFile.DIRECTORY_MOVIES as "Movies";
+    export const DIRECTORY_PICTURES = PortalnesiaFile.DIRECTORY_PICTURES as "Pictures";
+    export const DIRECTORY_MUSIC = PortalnesiaFile.DIRECTORY_MUSIC as "Music";
 }
 
 export default Files;

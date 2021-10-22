@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <files-path name="portalnesia-files" path="." />
+    <external-files-path name="portalnesia-ext-files" path="." />
+    <external-path name="portalnesia-ext" path="." />
+    <external-media-path name="portalnesia-ext-media" path="." />
+    <external-cache-path name="portalnesia-ext-cache" path="." />
+    <cache-path name="portalnesia-cache" path="." />
+</paths>

@@ -579,7 +579,7 @@ AppRegistry.registerHeadlessTask(Portalnesia.Notification.HEADLESS_TASK, () => n
         path: string
     }
     mimeType: string;
-    headers: HeaderArray[];
+    headers?: HeaderArray[];
     /**
      * Title for notification
      */

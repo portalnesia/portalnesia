@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DownloadManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -16,8 +17,10 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.FileProvider;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -27,6 +30,7 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -196,8 +200,11 @@ public class PortalnesiaFileModule extends ReactContextBaseJavaModule {
                     builder.setSmallIcon(R.mipmap.ic_portalnesia_notification_icon);
                     int color = context.getResources().getColor(R.color.portalnesia_notification_color);
                     builder.setColor(color);
-                    Intent openDownload = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
-                    openDownload.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    Intent openDownload = getDownloadedIntent(context,id);
+                    if(openDownload == null) {
+                        openDownload = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
+                        openDownload.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    }
                     builder.setContentIntent(PendingIntent.getActivity(context,0,openDownload,PendingIntent.FLAG_CANCEL_CURRENT));
                     builder.setAutoCancel(true);
                     builder.setSilent(false);
@@ -227,6 +234,30 @@ public class PortalnesiaFileModule extends ReactContextBaseJavaModule {
             }
         }
     };
+
+    @Nullable
+    private Intent getDownloadedIntent(final Context context,final Long id) {
+        DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Query query = new DownloadManager.Query().setFilterById(id);
+        Cursor cursor = dm.query(query);
+        if(cursor.moveToFirst()) {
+            int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
+            String localUri = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+            String mimeType = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_MEDIA_TYPE));
+            if(status == DownloadManager.STATUS_SUCCESSFUL) {
+                Uri uri = Uri.parse(localUri);
+                if(ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
+                    File file = new File(uri.getPath());
+                    uri = FileProvider.getUriForFile(context,"com.portalnesia.pkg.provider",file);
+                    Intent open = new Intent(Intent.ACTION_VIEW);
+                    open.setDataAndType(uri,mimeType);
+                    open.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    return open;
+                }
+            }
+        }
+        return null;
+    }
 
     public static String getPath(final Context context, final Uri uri) {
         if(DocumentsContract.isDocumentUri(context,uri)) {

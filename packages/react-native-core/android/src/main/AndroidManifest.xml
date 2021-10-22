@@ -4,6 +4,7 @@
           package="com.portalnesia.pkg.core">
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application>
         <service android:name=".HeadlessNotificationServices"/>
@@ -12,5 +13,14 @@
                 <action android:name="com.portalnesia.NOTIFICATION_ACTION" />
             </intent-filter>
         </receiver>
+        <provider
+            android:authorities="com.portalnesia.pkg.provider"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider" />
+        </provider>
     </application>
 </manifest>
