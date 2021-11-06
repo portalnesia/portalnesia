@@ -93,13 +93,12 @@ export const parseURL=(url: string): string=>{
  * @param func if set, invoke function after text being converted
  * @returns string|void
  */
-export const ucwords=function(text: string,func?: (str: string)=>void){
+export const ucwords=function(text: string){
     if(typeof text!=='string') return '';
     const str=text.toLowerCase().replace(/\b[a-z]/g, function(letter) {
         return letter.toUpperCase();
     });
-    if(typeof func === 'function') return func(str);
-    else return str;
+    return str;
 }
 
 /**
@@ -108,7 +107,7 @@ export const ucwords=function(text: string,func?: (str: string)=>void){
  * @param func if set, invoke function after text being converted
  * @returns string|void
  */
-export const jsStyles=function(text: string,func?: (str: string)=>void){
+export const jsStyles=function(text: string){
     if(typeof text!=='string') return '';
     let str=text.toLowerCase();
     const from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;-";
@@ -124,8 +123,7 @@ export const jsStyles=function(text: string,func?: (str: string)=>void){
         return p1.toLowerCase()
     });
     str=str.replace(/\s/g,"")
-    if(typeof func === 'function') return func(str);
-    else return str;
+    return str;
 } 
 
 /**
@@ -135,13 +133,12 @@ export const jsStyles=function(text: string,func?: (str: string)=>void){
  * @param func 
  * @returns 
  */
-export const firstLetter=function(text: string,number?: number,func?: (str: string)=>void){
+export const firstLetter=function(text: string,number?: number){
     if(typeof text!=='string') return '';
     let str=text.toLowerCase().replace(/\b([a-z])(\S*)/g, function(a,b) {
         return b.toUpperCase();
     }).replace(/\s/g,"");
     if(typeof number==='number') str=str.substring(0,number);
-    if(typeof func === 'function') return func(str);
     else return str;
 } 
 
@@ -184,7 +181,7 @@ export const splice = function(text: string,idx: number, rem: number, str: strin
  * @param lowercase 
  * @returns 
  */
-export const slugFormat = function (text: string,func?: (result: string)=>void,lowercase?: boolean): string|void {
+export const slugFormat = function (text: string,lowercase?: boolean): string|void {
     if(typeof text!=='string') return '';
     lowercase=typeof lowercase==='boolean'&&lowercase===true;
     let str: string,t=text;
@@ -196,8 +193,7 @@ export const slugFormat = function (text: string,func?: (result: string)=>void,l
         str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
     }
     const res=str.replace(/^(-|\s| )]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
-    if(typeof func === 'function') return func(res);
-    else return res
+    return res
 };
   
 export async function copyTextBrowser(text: string){
@@ -262,17 +258,19 @@ export const number_size=(bytes: number|null|undefined,precision=2): string=>{
 }
   
 const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+const SMALL_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
 
 /**
  * Generate random string
  * @param number maximum string being generated
  * @returns 
  */
-export const generateRandom=(number=10)=>{
+export const generateRandom=(number=10,lowercase_only=false)=>{
     let result='';
     const charLength = CHARS.length;
     for (let i = 0; i < number; i++) {
-        result += CHARS.charAt(Math.floor(Math.random() * charLength))
+        if(lowercase_only) result += SMALL_CHARS.charAt(Math.floor(Math.random() * charLength))
+        else result += CHARS.charAt(Math.floor(Math.random() * charLength))
     }
     return result;
 }
@@ -376,4 +374,41 @@ export const isTwitterURL=(url:string)=>{
 
 export function firstToUpper(text:string) {
     return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+export function number_format_short<D={number: number,format: string}>(n: number,precision=1,onlyNumber=false) {
+    let number: string="0";
+    let suffix: string="";
+    // 0 - 900
+    if(n < 900) {
+        number = n.toString();
+    }
+    // 0.9k-850k
+    else if(n < 900000) {
+        number = (n/1000).toFixed(precision);
+        suffix = " K"
+    }
+    // 0.9m-850m
+    else if(n < 900000000) {
+        number = (n/1000000).toFixed(precision);
+        suffix = " M"
+    }
+    // 0.9b-850b
+    else if(n < 900000000000) {
+        number = (n/1000000000).toFixed(precision);
+        suffix = " B"
+    }
+    // 0.9t+
+    else {
+        number = (n/1000000000000).toFixed(precision);
+        suffix = " T"
+    }
+    let result: unknown;
+    if(!onlyNumber) {
+        result={number:n,format:`${number}${suffix}`}
+        return  result as D;
+    } else {
+        result = number
+        return result as D;
+    }
 }

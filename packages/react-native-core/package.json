@@ -1,7 +1,7 @@
 {
   "name": "@portalnesia/react-native-core",
   "title": "@portalnesia/react-native-core",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Portalnesia core native modules",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

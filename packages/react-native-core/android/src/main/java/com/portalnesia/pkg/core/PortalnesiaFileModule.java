@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -203,8 +204,8 @@ public class PortalnesiaFileModule extends ReactContextBaseJavaModule {
                     Intent openDownload = getDownloadedIntent(context,id);
                     if(openDownload == null) {
                         openDownload = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
-                        openDownload.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     }
+                    openDownload.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     builder.setContentIntent(PendingIntent.getActivity(context,0,openDownload,PendingIntent.FLAG_CANCEL_CURRENT));
                     builder.setAutoCancel(true);
                     builder.setSilent(false);
@@ -244,11 +245,14 @@ public class PortalnesiaFileModule extends ReactContextBaseJavaModule {
             int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
             String localUri = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
             String mimeType = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_MEDIA_TYPE));
-            if(status == DownloadManager.STATUS_SUCCESSFUL) {
+            if((status == DownloadManager.STATUS_SUCCESSFUL) && localUri != null) {
                 Uri uri = Uri.parse(localUri);
                 if(ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
-                    File file = new File(uri.getPath());
-                    uri = FileProvider.getUriForFile(context,"com.portalnesia.pkg.provider",file);
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        File file = new File(uri.getPath());
+                        String provider = context.getPackageName() + ".PortalnesiaFilesProvider";
+                        uri = FileProvider.getUriForFile(context,provider,file);
+                    }
                     Intent open = new Intent(Intent.ACTION_VIEW);
                     open.setDataAndType(uri,mimeType);
                     open.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -256,6 +260,7 @@ public class PortalnesiaFileModule extends ReactContextBaseJavaModule {
                 }
             }
         }
+        cursor.close();
         return null;
     }
 
