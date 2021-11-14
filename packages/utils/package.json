@@ -1,6 +1,6 @@
 {
   "name": "@portalnesia/utils",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Utility for Portalnesia",
   "main": "index.js",
   "types": "index.d.ts",
@@ -26,5 +26,8 @@
   "homepage": "https://portalnesia.com",
   "devDependencies": {
     "typescript": "^4.4.2"
+  },
+  "dependencies": {
+    "@sindresorhus/slugify": "^2.1.0"
   }
 }

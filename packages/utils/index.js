@@ -8,8 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.firstToUpper = exports.isTwitterURL = exports.isURL = exports.randomInt = exports.extractMeta = exports.listToMatrix = exports.adddesc = exports.addslashes = exports.separateNumber = exports.acronym = exports.insertElementAfter = exports.time_ago = exports.numberFormat = exports.generateRandom = exports.number_size = exports.toBlob = exports.copyTextBrowser = exports.slugFormat = exports.splice = exports.truncate = exports.replaceAt = exports.urlToDomain = exports.firstLetter = exports.jsStyles = exports.ucwords = exports.parseURL = exports.specialHTML = exports.stripHTML = exports.escapeHTML = exports.monthNamesEn = exports.monthNames = exports.isEmptyObj = exports.clean = void 0;
+exports.validateEmail = exports.number_format_short = exports.firstToUpper = exports.isTwitterURL = exports.isURL = exports.randomInt = exports.extractMeta = exports.listToMatrix = exports.adddesc = exports.addslashes = exports.separateNumber = exports.acronym = exports.insertElementAfter = exports.time_ago = exports.numberFormat = exports.generateRandom = exports.number_size = exports.toBlob = exports.copyTextBrowser = exports.slugFormat = exports.splice = exports.truncate = exports.replaceAt = exports.urlToDomain = exports.firstLetter = exports.jsStyles = exports.ucwords = exports.parseURL = exports.specialHTML = exports.stripHTML = exports.escapeHTML = exports.monthNamesEn = exports.monthNames = exports.isEmptyObj = exports.clean = void 0;
+const slugify_1 = __importDefault(require("@sindresorhus/slugify"));
 /**
  * Clean text format
  * @param text: text to clean
@@ -110,16 +114,13 @@ exports.parseURL = parseURL;
  * @param func if set, invoke function after text being converted
  * @returns string|void
  */
-const ucwords = function (text, func) {
+const ucwords = function (text) {
     if (typeof text !== 'string')
         return '';
     const str = text.toLowerCase().replace(/\b[a-z]/g, function (letter) {
         return letter.toUpperCase();
     });
-    if (typeof func === 'function')
-        return func(str);
-    else
-        return str;
+    return str;
 };
 exports.ucwords = ucwords;
 /**
@@ -128,7 +129,7 @@ exports.ucwords = ucwords;
  * @param func if set, invoke function after text being converted
  * @returns string|void
  */
-const jsStyles = function (text, func) {
+const jsStyles = function (text) {
     if (typeof text !== 'string')
         return '';
     let str = text.toLowerCase();
@@ -145,10 +146,7 @@ const jsStyles = function (text, func) {
         return p1.toLowerCase();
     });
     str = str.replace(/\s/g, "");
-    if (typeof func === 'function')
-        return func(str);
-    else
-        return str;
+    return str;
 };
 exports.jsStyles = jsStyles;
 /**
@@ -158,7 +156,7 @@ exports.jsStyles = jsStyles;
  * @param func
  * @returns
  */
-const firstLetter = function (text, number, func) {
+const firstLetter = function (text, number) {
     if (typeof text !== 'string')
         return '';
     let str = text.toLowerCase().replace(/\b([a-z])(\S*)/g, function (a, b) {
@@ -166,8 +164,6 @@ const firstLetter = function (text, number, func) {
     }).replace(/\s/g, "");
     if (typeof number === 'number')
         str = str.substring(0, number);
-    if (typeof func === 'function')
-        return func(str);
     else
         return str;
 };
@@ -212,22 +208,9 @@ exports.splice = splice;
  * @param lowercase
  * @returns
  */
-const slugFormat = function (text, func, lowercase) {
-    if (typeof text !== 'string')
-        return '';
-    lowercase = typeof lowercase === 'boolean' && lowercase === true;
-    let str, t = text;
-    str = lowercase ? t.toLowerCase() : t;
-    const from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
-    const to = "aaaaeeeeiiiioooouuuunc------";
-    for (var i = 0, l = from.length; i < l; i++) {
-        str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
-    }
-    const res = str.replace(/^(-|\s| )]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
-    if (typeof func === 'function')
-        return func(res);
-    else
-        return res;
+const slugFormat = function (text, lowercase, option) {
+    const opt = Object.assign({ lowercase }, option);
+    return slugify_1.default(text, opt);
 };
 exports.slugFormat = slugFormat;
 function copyTextBrowser(text) {
@@ -296,16 +279,20 @@ const number_size = (bytes, precision = 2) => {
 };
 exports.number_size = number_size;
 const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+const SMALL_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
 /**
  * Generate random string
  * @param number maximum string being generated
  * @returns
  */
-const generateRandom = (number = 10) => {
+const generateRandom = (number = 10, lowercase_only = false) => {
     let result = '';
     const charLength = CHARS.length;
     for (let i = 0; i < number; i++) {
-        result += CHARS.charAt(Math.floor(Math.random() * charLength));
+        if (lowercase_only)
+            result += SMALL_CHARS.charAt(Math.floor(Math.random() * charLength));
+        else
+            result += CHARS.charAt(Math.floor(Math.random() * charLength));
     }
     return result;
 };
@@ -412,4 +399,49 @@ function firstToUpper(text) {
     return text.charAt(0).toUpperCase() + text.slice(1);
 }
 exports.firstToUpper = firstToUpper;
+function number_format_short(n, precision = 1, onlyNumber = false) {
+    let number = "0";
+    let suffix = "";
+    // 0 - 900
+    if (n < 900) {
+        number = n.toString();
+    }
+    // 0.9k-850k
+    else if (n < 900000) {
+        number = (n / 1000).toFixed(precision);
+        suffix = " K";
+    }
+    // 0.9m-850m
+    else if (n < 900000000) {
+        number = (n / 1000000).toFixed(precision);
+        suffix = " M";
+    }
+    // 0.9b-850b
+    else if (n < 900000000000) {
+        number = (n / 1000000000).toFixed(precision);
+        suffix = " B";
+    }
+    // 0.9t+
+    else {
+        number = (n / 1000000000000).toFixed(precision);
+        suffix = " T";
+    }
+    let result;
+    if (!onlyNumber) {
+        result = { number: n, format: `${number}${suffix}` };
+        return result;
+    }
+    else {
+        result = number;
+        return result;
+    }
+}
+exports.number_format_short = number_format_short;
+function validateEmail(email) {
+    const regexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (regexp.test(email))
+        return true;
+    return false;
+}
+exports.validateEmail = validateEmail;
 //# sourceMappingURL=index.js.map

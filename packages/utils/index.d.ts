@@ -1,3 +1,7 @@
+import { Options } from '@sindresorhus/slugify';
+export declare type Without<T, K> = {
+    [L in Exclude<keyof T, K>]: T[L];
+};
 /**
  * Clean text format
  * @param text: text to clean
@@ -33,14 +37,14 @@ export declare const parseURL: (url: string) => string;
  * @param func if set, invoke function after text being converted
  * @returns string|void
  */
-export declare const ucwords: (text: string, func?: (str: string) => void) => string | void;
+export declare const ucwords: (text: string) => string;
 /**
  * convertTextToJsStyles
  * @param text
  * @param func if set, invoke function after text being converted
  * @returns string|void
  */
-export declare const jsStyles: (text: string, func?: (str: string) => void) => string | void;
+export declare const jsStyles: (text: string) => string;
 /**
  * Get first characters of each word
  * @param text
@@ -48,7 +52,7 @@ export declare const jsStyles: (text: string, func?: (str: string) => void) => s
  * @param func
  * @returns
  */
-export declare const firstLetter: (text: string, number?: number, func?: (str: string) => void) => string | void;
+export declare const firstLetter: (text: string, number?: number) => string;
 /**
  * Convert URL to only domain
  * @param url
@@ -71,7 +75,7 @@ export declare const splice: (text: string, idx: number, rem: number, str: strin
  * @param lowercase
  * @returns
  */
-export declare const slugFormat: (text: string, func?: (result: string) => void, lowercase?: boolean) => string | void;
+export declare const slugFormat: (text: string, lowercase?: boolean, option?: Without<Options, 'lowercase'>) => string;
 export declare function copyTextBrowser(text: string): Promise<void>;
 export declare const toBlob: (b64Data: string, contentType: string, sliceSize?: number) => Blob;
 /**
@@ -86,7 +90,7 @@ export declare const number_size: (bytes: number | null | undefined, precision?:
  * @param number maximum string being generated
  * @returns
  */
-export declare const generateRandom: (number?: number) => string;
+export declare const generateRandom: (number?: number, lowercase_only?: boolean) => string;
 export declare const numberFormat: (angka: string, separate?: string) => string;
 /**
  * Convert second to "time ago" format
@@ -108,3 +112,8 @@ export declare const randomInt: (total?: number) => number;
 export declare const isURL: (url: string) => boolean;
 export declare const isTwitterURL: (url: string) => boolean;
 export declare function firstToUpper(text: string): string;
+export declare function number_format_short<D = {
+    number: number;
+    format: string;
+}>(n: number, precision?: number, onlyNumber?: boolean): D;
+export declare function validateEmail(email: string): boolean;

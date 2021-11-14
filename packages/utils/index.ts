@@ -1,3 +1,8 @@
+import slugify,{Options} from '@sindresorhus/slugify'
+
+export type Without<T,K> = {
+    [L in Exclude<keyof T,K>]: T[L]
+}
 /**
  * Clean text format
  * @param text: text to clean
@@ -181,19 +186,12 @@ export const splice = function(text: string,idx: number, rem: number, str: strin
  * @param lowercase 
  * @returns 
  */
-export const slugFormat = function (text: string,lowercase?: boolean): string|void {
-    if(typeof text!=='string') return '';
-    lowercase=typeof lowercase==='boolean'&&lowercase===true;
-    let str: string,t=text;
-    str = lowercase ? t.toLowerCase() : t;
-        
-    const from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
-    const to   = "aaaaeeeeiiiioooouuuunc------";
-    for (var i=0, l=from.length ; i<l ; i++) {
-        str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+export const slugFormat = function (text: string,lowercase?: boolean,option?: Without<Options,'lowercase'>): string {
+    const opt: Options = {
+        lowercase,
+        ...option
     }
-    const res=str.replace(/^(-|\s| )]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
-    return res
+    return slugify(text,opt);
 };
   
 export async function copyTextBrowser(text: string){
@@ -411,4 +409,10 @@ export function number_format_short<D={number: number,format: string}>(n: number
         result = number
         return result as D;
     }
+}
+
+export function validateEmail(email: string) {
+    const regexp=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if(regexp.test(email)) return true;
+    return false;
 }
