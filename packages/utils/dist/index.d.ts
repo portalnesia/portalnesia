@@ -1,4 +1,7 @@
-import { Options } from '@sindresorhus/slugify';
+import { Options } from './slugify';
+import { Options as TransliterateOption } from './transliterate';
+export type { Options as SlugifyOptions } from './slugify';
+export type { Options as TransliterateOption } from './transliterate';
 export declare type Without<T, K> = {
     [L in Exclude<keyof T, K>]: T[L];
 };
@@ -75,7 +78,7 @@ export declare const splice: (text: string, idx: number, rem: number, str: strin
  * @param lowercase
  * @returns
  */
-export declare const slugFormat: (text: string, lowercase?: boolean, option?: Without<Options, 'lowercase'>) => string;
+export declare const slugFormat: (text: string, lowercase?: boolean, option?: Partial<Without<Options, 'lowercase'>>) => string;
 export declare function copyTextBrowser(text: string): Promise<void>;
 export declare const toBlob: (b64Data: string, contentType: string, sliceSize?: number) => Blob;
 /**
@@ -117,3 +120,6 @@ export declare function number_format_short<D = {
     format: string;
 }>(n: number, precision?: number, onlyNumber?: boolean): D;
 export declare function validateEmail(email: string): boolean;
+export declare function transliterate(string: string, options: TransliterateOption): string;
+export declare function stripslashes(string: string): string;
+export declare function uuid(text?: string): string;

@@ -1,9 +1,9 @@
 {
   "name": "@portalnesia/utils",
-  "version": "1.0.5",
+  "version": "1.1.1",
   "description": "Utility for Portalnesia",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc"
@@ -12,6 +12,12 @@
     "type": "git",
     "url": "git+https://github.com/portalnesia/portalnesia.git"
   },
+  "files": [
+    "./README.md",
+    "dist",
+    ".gitignore",
+    ".npmignore"
+  ],
   "keywords": [
     "utility",
     "nodejs",
@@ -25,9 +31,12 @@
   },
   "homepage": "https://portalnesia.com",
   "devDependencies": {
+    "@types/lodash.deburr": "^4.1.6",
+    "@types/uuid": "^8.3.1",
     "typescript": "^4.4.2"
   },
   "dependencies": {
-    "@sindresorhus/slugify": "^2.1.0"
+    "lodash.deburr": "^4.1.0",
+    "uuid": "^8.3.2"
   }
 }

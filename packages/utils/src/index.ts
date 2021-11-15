@@ -1,4 +1,8 @@
-import slugify,{Options} from '@sindresorhus/slugify'
+import slugify,{Options} from './slugify'
+import slugTransliterate,{Options as TransliterateOption} from './transliterate'
+export type {Options as SlugifyOptions} from './slugify'
+export type {Options as TransliterateOption} from './transliterate'
+import {v4 as uuidv4,v5 as uuidv5} from 'uuid'
 
 export type Without<T,K> = {
     [L in Exclude<keyof T,K>]: T[L]
@@ -186,9 +190,9 @@ export const splice = function(text: string,idx: number, rem: number, str: strin
  * @param lowercase 
  * @returns 
  */
-export const slugFormat = function (text: string,lowercase?: boolean,option?: Without<Options,'lowercase'>): string {
+export const slugFormat = function (text: string,lowercase?: boolean,option?: Partial<Without<Options,'lowercase'>>): string {
     const opt: Options = {
-        lowercase,
+        lowercase:lowercase||true,
         ...option
     }
     return slugify(text,opt);
@@ -415,4 +419,18 @@ export function validateEmail(email: string) {
     const regexp=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if(regexp.test(email)) return true;
     return false;
+}
+
+export function transliterate(string: string, options: TransliterateOption) {
+    return slugTransliterate(string,options);
+}
+export function stripslashes(string: string) {
+    return string.replace(/\\/gim,'');
+}
+export function uuid(text?: string) {
+    let uid = uuidv4();
+    if(text) {
+        uid = uuidv5(text.toLowerCase(),uid);
+    }
+    return uid;
 }

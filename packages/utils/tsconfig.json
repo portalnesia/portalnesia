@@ -3,9 +3,12 @@
         "esModuleInterop": true,
         "module": "commonjs",
         "declaration": true,
-        "sourceMap": true,
         "noEmitOnError": true,
         "target": "es2015",
+        "rootDir": "./src",
+        "declarationDir": "./dist",
+        "outDir": "./dist"
     },
-    "exclude": ["node_modules"]
+    "include": ["./src"],
+    "exclude": ["node_modules","./dist"]
 }
