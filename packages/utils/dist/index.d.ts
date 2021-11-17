@@ -123,3 +123,4 @@ export declare function validateEmail(email: string): boolean;
 export declare function transliterate(string: string, options: TransliterateOption): string;
 export declare function stripslashes(string: string): string;
 export declare function uuid(text?: string): string;
+export declare function isTrue(whatToCheck: unknown): boolean;

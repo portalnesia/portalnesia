@@ -434,3 +434,9 @@ export function uuid(text?: string) {
     }
     return uid;
 }
+export function isTrue(whatToCheck: unknown) {
+    if(typeof whatToCheck === 'string' && whatToCheck === 'true') return true;
+    if(typeof whatToCheck === 'boolean' && whatToCheck === true) return true;
+    if(typeof whatToCheck === 'number' && whatToCheck === 1) return true;
+    return false;
+}
