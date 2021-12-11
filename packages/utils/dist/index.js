@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -211,35 +202,36 @@ exports.splice = splice;
  * @returns
  */
 const slugFormat = function (text, lowercase, option) {
-    const opt = Object.assign({ lowercase: lowercase || true }, option);
+    const opt = {
+        lowercase: lowercase || true,
+        ...option
+    };
     return slugify_1.default(text, opt);
 };
 exports.slugFormat = slugFormat;
-function copyTextBrowser(text) {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (typeof window !== 'undefined') {
-            const el = document.createElement('textarea');
-            el.setAttribute('readonly', '');
-            el.style.position = 'absolute';
-            el.style.left = '-9999px';
-            document.body.appendChild(el);
-            el.value = text.toString();
-            el.textContent = text.toString();
-            el.select();
-            const sel = window.getSelection();
-            const range = document.createRange();
-            range.selectNode(el);
-            if (sel !== null) {
-                sel.removeAllRanges();
-                sel.addRange(range);
-                if (document.execCommand('copy')) {
-                    document.body.removeChild(el);
-                    return Promise.resolve();
-                }
+async function copyTextBrowser(text) {
+    if (typeof window !== 'undefined') {
+        const el = document.createElement('textarea');
+        el.setAttribute('readonly', '');
+        el.style.position = 'absolute';
+        el.style.left = '-9999px';
+        document.body.appendChild(el);
+        el.value = text.toString();
+        el.textContent = text.toString();
+        el.select();
+        const sel = window.getSelection();
+        const range = document.createRange();
+        range.selectNode(el);
+        if (sel !== null) {
+            sel.removeAllRanges();
+            sel.addRange(range);
+            if (document.execCommand('copy')) {
+                document.body.removeChild(el);
+                return Promise.resolve();
             }
-            throw new Error("Window.getSelection error");
         }
-    });
+        throw new Error("Window.getSelection error");
+    }
 }
 exports.copyTextBrowser = copyTextBrowser;
 ;
@@ -333,8 +325,7 @@ const time_ago = (seconds) => {
 };
 exports.time_ago = time_ago;
 const insertElementAfter = (newNode, referenceNode) => {
-    var _a;
-    (_a = referenceNode.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(newNode, referenceNode.nextSibling);
+    referenceNode.parentNode?.insertBefore(newNode, referenceNode.nextSibling);
 };
 exports.insertElementAfter = insertElementAfter;
 const acronym = (text, len = 2) => {
@@ -463,7 +454,7 @@ function uuid(text) {
 }
 exports.uuid = uuid;
 function isTrue(whatToCheck) {
-    if (typeof whatToCheck === 'string' && whatToCheck === 'true')
+    if (typeof whatToCheck === 'string' && ['true', '1'].includes(whatToCheck))
         return true;
     if (typeof whatToCheck === 'boolean' && whatToCheck === true)
         return true;
