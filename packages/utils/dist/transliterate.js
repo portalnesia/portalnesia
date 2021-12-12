@@ -17,10 +17,7 @@ function transliterate(string, options) {
     if (typeof string !== 'string') {
         throw new TypeError(`Expected a string, got \`${typeof string}\``);
     }
-    options = {
-        customReplacements: [],
-        ...options
-    };
+    options = Object.assign({ customReplacements: [] }, options);
     const customReplacements = [
         ...slugifyReplacement_1.default,
         ...options.customReplacements

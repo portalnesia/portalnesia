@@ -29,15 +29,7 @@ function slugify(string, options) {
     if (typeof string !== 'string') {
         throw new TypeError(`Expected a string, got \`${typeof string}\``);
     }
-    options = {
-        separator: '-',
-        lowercase: true,
-        decamelize: true,
-        customReplacements: [],
-        preserveLeadingUnderscore: false,
-        preserveTrailingDash: false,
-        ...options
-    };
+    options = Object.assign({ separator: '-', lowercase: true, decamelize: true, customReplacements: [], preserveLeadingUnderscore: false, preserveTrailingDash: false }, options);
     const shouldPrependUnderscore = options.preserveLeadingUnderscore && string.startsWith('_');
     const shouldAppendDash = options.preserveTrailingDash && string.endsWith('-');
     const customReplacements = [
