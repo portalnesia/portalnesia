@@ -1,6 +1,6 @@
 {
   "name": "@portalnesia/custom-ckeditor5",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Custom CKEditor 5 with Image Manager",
   "main": "./build/ckeditor.js",
   "types": "./build/ckeditor.d.ts",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/portalnesia/custom-ckeditor5.git"
+    "url": "git+https://github.com/portalnesia/portalnesia.git"
   },
   "files": [
     "build",

@@ -13,7 +13,11 @@ npm install @portalnesia/custom-ckeditor5
 Or, from cdn
 
 ```
+https://cdn.jsdelivr.net/npm/@portalnesia/custom-ckeditor5@1.1.2/build/ckeditor.js
+```
 
+```
+https://unpkg.com/@portalnesia/custom-ckeditor5@1.1.2/build/ckeditor.js
 ```
 
 And use it in your website
@@ -23,8 +27,8 @@ And use it in your website
     <p>This is the editor content</p>
 </div>
 
-<!-- <script src="./node_modules/@portalnesia/custom-ckeditor5/build/ckeditor.js"></script>
-<script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/@portalnesia/custom-ckeditor5@1.1.2/build/ckeditor.js"></script>  -->
+<!-- <script src="https://unpkg.com/@portalnesia/custom-ckeditor5@1.1.2/build/ckeditor.js"></script>  -->
 <script src="./node_modules/@portalnesia/custom-ckeditor5/build/ckeditor.js"></script>
 <script>
     PortalnesiaEditor

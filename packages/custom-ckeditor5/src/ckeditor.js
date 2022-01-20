@@ -6,7 +6,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment.js';
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat.js';
 import AutoLink from '@ckeditor/ckeditor5-link/src/autolink.js';
-import Autosave from '@ckeditor/ckeditor5-autosave/src/autosave.js';
+//import Autosave from '@ckeditor/ckeditor5-autosave/src/autosave.js';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code.js';
@@ -32,6 +32,7 @@ import MediaEmbedToolbar from '@ckeditor/ckeditor5-media-embed/src/mediaembedtoo
 import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice.js';
+//import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions'
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat.js';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters.js';
@@ -60,7 +61,7 @@ Editor.builtinPlugins = [
 	Alignment,
 	Autoformat,
 	AutoLink,
-	Autosave,
+	//Autosave,
 	BlockQuote,
 	Bold,
 	Code,
@@ -86,6 +87,7 @@ Editor.builtinPlugins = [
 	PageBreak,
 	Paragraph,
 	PasteFromOffice,
+	//PendingActions,
 	RemoveFormat,
 	SourceEditing,
 	SpecialCharacters,
@@ -150,7 +152,9 @@ Editor.defaultConfig = {
 	language: 'en',
 	image: {
 		toolbar: [
+			'toggleImageCaption',
 			'imageTextAlternative',
+			'|',
 			'imageStyle:inline',
 			'imageStyle:block',
 			'imageStyle:side'
