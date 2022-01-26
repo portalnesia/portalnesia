@@ -53,6 +53,8 @@ import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformatio
 import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
 import ImageManager from './image'
+import CustomAttributes from './customAttributes';
+import Save from './save';
 
 class Editor extends ClassicEditor {}
 
@@ -107,13 +109,16 @@ Editor.builtinPlugins = [
 	TextTransformation,
 	TodoList,
 	Underline,
-	ImageManager
+	ImageManager,
+	CustomAttributes,
+	Save
 ];
 
 // Editor configuration.
 Editor.defaultConfig = {
 	toolbar: {
 		items: [
+			'save',
 			'undo',
 			'redo',
 			'|',
@@ -170,6 +175,11 @@ Editor.defaultConfig = {
 		]
 	},
 	imageManager:{
+		onClick:()=>{
+			console.warn("Warning: You must provide `onClick` callback");
+		}
+	},
+	save:{
 		onClick:()=>{
 			console.warn("Warning: You must provide `onClick` callback");
 		}

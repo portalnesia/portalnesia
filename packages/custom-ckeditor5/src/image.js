@@ -1,8 +1,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin'
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview'
 import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg'
-import ImageBlock from '@ckeditor/ckeditor5-image/src/imageblock'
-import ImageInline from '@ckeditor/ckeditor5-image/src/imageinline'
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting'
 import ImageInsertPanelView from '@ckeditor/ckeditor5-image/src/imageinsert/ui/imageinsertpanelview';
 import { prepareIntegrations } from '@ckeditor/ckeditor5-image/src/imageinsert/utils';
@@ -19,6 +17,7 @@ export default class ImageManager extends Plugin {
 
     init() {
         const editor = this.editor;
+		const t = editor.locale.t;
         const onImageManagerClick = editor.config.get('imageManager').onClick;
         const command = editor.commands.get("insertImage");
 
@@ -26,7 +25,7 @@ export default class ImageManager extends Plugin {
             const view = new ButtonView(locale);
             
             view.set({
-                label:"Insert image",
+                label:t("Insert image"),
                 icon: imageIcon,
                 tooltip: true
             })

@@ -77,6 +77,33 @@ PortalnesiaEditor
     })
 ```
 
+### Handle Save Button
+
+To handle save button when it clicked, add `save.onClick` config to editor.
+
+```js
+PortalnesiaEditor
+    .create( document.querySelector("#editor"),{
+        imageManager:{
+            onClick:function(){
+                /**
+                 * 
+                 * Your custom save function which will save the editor's data to your database.
+                 * 
+                */
+                console.log("This callback will be executed when save toolbar is clicked")
+            }
+        }
+    } )
+    .then( editor => {
+        // Save editor instance
+        window.editor = editor;
+    })
+    .catch( error => {
+        console.error(error);
+    })
+```
+
 ### Insert Image From Your Image Manager
 
 This is an example function how to insert your image from your image manager to editor

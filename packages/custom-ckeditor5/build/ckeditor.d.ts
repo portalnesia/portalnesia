@@ -9,6 +9,9 @@ declare module '@ckeditor/ckeditor5-core/src/editor/editorconfig' {
         imageManager?: {
             onClick(): void
         }
+        save?: {
+            onClick(): void
+        }
     }
 }
 

@@ -104,12 +104,17 @@
 				– Frederico Knabben. All rights reserved.
 			</p>
 		</footer>
-		<script src="../build/index.js"></script>
+		<script src="../build/ckeditor.js"></script>
 		<script>PortalnesiaEditor
 				.create( document.querySelector( '.editor' ), {
 					imageManager:{
 						onClick:function(){
-							console.warn("Warning: You must provide `onClick` callback");
+							console.warn("Image manager clicked");
+						}
+					},
+					save:{
+						onClick:function() {
+							console.warn("Save clicked");
 						}
 					}
 				} )
