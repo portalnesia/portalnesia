@@ -107,14 +107,12 @@
 		<script src="../build/ckeditor.js"></script>
 		<script>PortalnesiaEditor
 				.create( document.querySelector( '.editor' ), {
-					imageManager:{
-						onClick:function(){
-							console.warn("Image manager clicked");
-						}
-					},
-					save:{
-						onClick:function() {
+					portalnesia:{
+						onSave:function() {
 							console.warn("Save clicked");
+						},
+						onImageManager:function() {
+							console.warn("Image manager clicked");
 						}
 					}
 				} )

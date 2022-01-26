@@ -18,7 +18,7 @@ export default class ImageManager extends Plugin {
     init() {
         const editor = this.editor;
 		const t = editor.locale.t;
-        const onImageManagerClick = editor.config.get('imageManager').onClick;
+        const onImageManagerClick = editor.config.get('portalnesia').onImageManager;
         const command = editor.commands.get("insertImage");
 
         editor.ui.componentFactory.add('imageManagerBrowser',(locale)=>{

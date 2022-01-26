@@ -55,6 +55,7 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
 import ImageManager from './image'
 import CustomAttributes from './customAttributes';
 import Save from './save';
+import Fullscreen from './fullscreen'
 
 class Editor extends ClassicEditor {}
 
@@ -111,13 +112,16 @@ Editor.builtinPlugins = [
 	Underline,
 	ImageManager,
 	CustomAttributes,
-	Save
+	Save,
+	Fullscreen
 ];
 
 // Editor configuration.
 Editor.defaultConfig = {
 	toolbar: {
 		items: [
+			'fullscreen',
+			'|',
 			'save',
 			'undo',
 			'redo',
@@ -174,13 +178,11 @@ Editor.defaultConfig = {
 			'tableProperties'
 		]
 	},
-	imageManager:{
-		onClick:()=>{
+	portalnesia:{
+		onImageManager:()=>{
 			console.warn("Warning: You must provide `onClick` callback");
-		}
-	},
-	save:{
-		onClick:()=>{
+		},
+		onSave:()=>{
 			console.warn("Warning: You must provide `onClick` callback");
 		}
 	}

@@ -6,11 +6,18 @@ import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
 declare module '@ckeditor/ckeditor5-core/src/editor/editorconfig' {
     export interface EditorConfig {
-        imageManager?: {
-            onClick(): void
-        }
-        save?: {
-            onClick(): void
+        /**
+         * Portalnesia configuration
+         */
+        portalnesia?:{
+            /**
+             * Callback when save toolbar is clicked.
+             */
+            onSave?(): void;
+            /**
+             * Callback when imageManager toolbar is clicked.
+             */
+            onImageManager?(): void
         }
     }
 }

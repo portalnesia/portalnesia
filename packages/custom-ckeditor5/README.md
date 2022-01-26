@@ -13,11 +13,11 @@ npm install @portalnesia/custom-ckeditor5
 Or, from cdn
 
 ```
-https://cdn.jsdelivr.net/npm/@portalnesia/custom-ckeditor5@1.1.2/build/ckeditor.js
+https://cdn.jsdelivr.net/npm/@portalnesia/custom-ckeditor5@2.0.0/build/ckeditor.js
 ```
 
 ```
-https://unpkg.com/@portalnesia/custom-ckeditor5@1.1.2/build/ckeditor.js
+https://unpkg.com/@portalnesia/custom-ckeditor5@2.0.0/build/ckeditor.js
 ```
 
 And use it in your website
@@ -33,9 +33,12 @@ And use it in your website
 <script>
     PortalnesiaEditor
         .create( document.querySelector("#editor"),{
-            imageManager:{
-                onClick:function(){
-                    console.log("This callback will be executed when image toolbar is clicked")
+            portalnesia:{
+                onSave:function(){
+
+                },
+                onImageManager:(){
+                    
                 }
             }
         } )
@@ -50,15 +53,15 @@ And use it in your website
 
 ## Configuration
 
-### Open Your Custom Image Manager
+### `portalnesia.onImageManager`
 
-Add `imageManager.onClick` config to Editor
+Callback function when imageManager toolbar is clicked.
 
 ```js
 PortalnesiaEditor
     .create( document.querySelector("#editor"),{
-        imageManager:{
-            onClick:function(){
+        portalnesia:{
+            onImageManager:function(){
                 /**
                  * 
                  * You can make custom UI for Image Manager which will display a collection of images and/or upload function
@@ -77,15 +80,15 @@ PortalnesiaEditor
     })
 ```
 
-### Handle Save Button
+### `portalnesia.onSave`
 
-To handle save button when it clicked, add `save.onClick` config to editor.
+Callback function to handle save toolbar when it clicked.
 
 ```js
 PortalnesiaEditor
     .create( document.querySelector("#editor"),{
-        imageManager:{
-            onClick:function(){
+        portalnesia:{
+            onSave:function(){
                 /**
                  * 
                  * Your custom save function which will save the editor's data to your database.
@@ -104,7 +107,7 @@ PortalnesiaEditor
     })
 ```
 
-### Insert Image From Your Image Manager
+## Insert Image From Your Image Manager
 
 This is an example function how to insert your image from your image manager to editor
 

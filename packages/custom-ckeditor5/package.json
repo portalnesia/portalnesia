@@ -1,6 +1,6 @@
 {
   "name": "@portalnesia/custom-ckeditor5",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "Custom CKEditor 5 with Image Manager",
   "main": "./build/ckeditor.js",
   "types": "./build/ckeditor.d.ts",

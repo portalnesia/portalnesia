@@ -1,0 +1,15 @@
+.pn_ck_fullscreen{
+    position: fixed !important;
+	top:0;
+	left: 0;
+	right:0;
+	bottom: 0;
+	height:100% !important;
+	width:100% !important;
+	z-index:1202;
+	overflow: hidden !important;
+	padding-bottom: 25px !important;
+}
+.pn_ck_fullscreen .ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline, .pn_ck_fullscreen .ck.ck-editor__main {
+    height: 100%;
+}
