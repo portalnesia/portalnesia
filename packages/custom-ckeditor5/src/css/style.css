@@ -7,8 +7,10 @@
 	height:100% !important;
 	width:100% !important;
 	z-index:1202;
-	overflow: hidden !important;
 	padding-bottom: 25px !important;
+}
+.pn_ck_fullscreen.without-overflow {
+	overflow: hidden !important;
 }
 .pn_ck_fullscreen .ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline, .pn_ck_fullscreen .ck.ck-editor__main {
     height: 100%;
