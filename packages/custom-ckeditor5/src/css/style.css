@@ -12,6 +12,9 @@
 .pn_ck_fullscreen.without-overflow {
 	overflow: hidden !important;
 }
+.pn_ck_fullscreen.with-overflow {
+	overflow: auto;
+}
 .pn_ck_fullscreen .ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline, .pn_ck_fullscreen .ck.ck-editor__main {
     height: 100%;
 }

@@ -33,9 +33,11 @@ export default class Fullscreen extends Plugin {
                     if ( isSourceEditingMode ) {
                         this.isSourceEditingMode = true;
                         edElement.classList.remove("without-overflow");
+                        edElement.classList.add("with-overflow");
                     } else {
                         this.isSourceEditingMode = false;
                         edElement.classList.add("without-overflow");
+                        edElement.classList.remove("with-overflow");
                     }
                 });
             }
@@ -61,6 +63,7 @@ export default class Fullscreen extends Plugin {
                     if(!isOverflowHidden) boElement.style.overflow = 'hidden';
                     edElement.classList.add("pn_ck_fullscreen");
                     if(!this.isSourceEditingMode) edElement.classList.add("without-overflow");
+                    else edElement.classList.add("with-overflow");
                     view.set( {
                         label: 'Normal',
                         icon: ImageFullCancel,
