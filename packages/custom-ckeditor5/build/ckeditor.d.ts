@@ -22,8 +22,17 @@ declare module '@ckeditor/ckeditor5-core/src/editor/editorconfig' {
     }
 }
 
+type CaptionLinkTypes = {text: string,href: string}
+/**
+ * Insert caption to images.
+ * @argument string; for string caption
+ * @argument \{ text: string,href: string };  for link caption
+ * @argument Array of string or link object;
+ */
+type CaptionTypes = string|CaptionLinkTypes|Array<string|CaptionLinkTypes>
+
 export class ImageManager extends Plugin {
-    handleSelectedImage(src: string): void;
+    handleSelectedImage(src: string,caption?:CaptionTypes): void;
 }
 
 export type CKEditorReactProps = {

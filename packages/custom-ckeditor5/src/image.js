@@ -5,11 +5,12 @@ import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting'
 import ImageInsertPanelView from '@ckeditor/ckeditor5-image/src/imageinsert/ui/imageinsertpanelview';
 import { prepareIntegrations } from '@ckeditor/ckeditor5-image/src/imageinsert/utils';
 import ImageInsertUi from '@ckeditor/ckeditor5-image/src/imageinsert/imageinsertui'
+import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
 import ImageUtils from '@ckeditor/ckeditor5-image/src/imageutils';
 
 export default class ImageManager extends Plugin {
     static get requires() {
-        return [ ImageEditing, ImageUtils, ImageInsertUi ]
+        return [ ImageEditing, ImageUtils, ImageInsertUi, ImageCaptionEditing ]
     }
     static get pluginName() {
         return "ImageManager";
@@ -133,7 +134,7 @@ export default class ImageManager extends Plugin {
 		return dropdownView;
     }
 
-    handleSelectedImage(source){
+    handleSelectedImage(source,caption=null){
         const editor = this.editor;
         const imageUtils = this.editor.plugins.get( 'ImageUtils' );
 
@@ -146,6 +147,46 @@ export default class ImageManager extends Plugin {
             } );
         } else {
             editor.execute( 'insertImage', { source } );
+
+			if(caption) {
+				editor.model.change(writer=>{
+					const selection = editor.model.document.selection;
+					let selectedImage = selection.getSelectedElement();
+
+					if(imageUtils.isInlineImage(selectedImage)) {
+						editor.execute('imageTypeBlock');
+						selectedImage = selection.getSelectedElement();
+					}
+
+					const newCaptionElement = writer.createElement('caption');
+
+					if(Array.isArray(caption)) {
+						caption.forEach(c=>{
+							insertCaption(writer,newCaptionElement,c);
+						})
+					} else {
+						insertCaption(writer,newCaptionElement,caption);
+					}
+					writer.append(newCaptionElement,selectedImage);
+				})
+			}
         }
     }
+}
+
+function insertCaption(writer,element,caption) {
+	if(typeof caption === 'string') {
+		insertTextCaption(writer,element,caption);
+	} else if(typeof caption === 'object' && typeof caption.text === 'string' && typeof caption.href === 'string') {
+		insertLinkCaption(writer,element,caption)
+	}
+}
+
+function insertTextCaption(writer,element,caption) {
+	writer.appendText(caption,element);
+}
+
+function insertLinkCaption(writer,element,caption) {
+	const {text,href} = caption;
+	writer.appendText(text,{linkHref:href},element);
 }
