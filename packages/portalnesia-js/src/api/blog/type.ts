@@ -22,8 +22,6 @@ export interface Blog extends BasicBlog {
     format:string;
     last_modified:IDate;
     block: boolean;
-    dilihat_bulanan?: number;
-    dilihat?: number;
     liked?: boolean;
     comment_count?: ISeen;
 }

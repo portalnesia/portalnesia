@@ -5,6 +5,7 @@ export interface PortalnesiaOptions {
     client_secret?: string;
     axios?: AxiosRequestConfig;
     version?: number;
+    redirect_uri?: string,
 }
 
 export type ISeen = {

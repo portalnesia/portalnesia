@@ -58,7 +58,7 @@ class Portalnesia {
      * @param axiosOptions optional axios options
      * @template D Response Data for type D
      */
-    request<D=any>(method: 'post'|'get'|'delete'|'put',url: string,body?:object,axiosOptions?: AxiosRequestConfig): Promise<D> {
+    request<D=any,B=any>(method: 'post'|'get'|'delete'|'put',url: string,body?:B,axiosOptions?: AxiosRequestConfig): Promise<D> {
         this.validateToken();
         if(typeof this[method] !== 'function') throw new Error();
         return this[method]<D>(url,body,axiosOptions);
@@ -99,6 +99,9 @@ class Portalnesia {
                 throw new PortalnesiaError("Connection timeout")
             } else {
                 if(e?.response?.data?.error) {
+                    if(e?.response?.data?.error_description) {
+                        throw new PortalnesiaError(e?.response?.data?.error_description,e?.response?.data?.error)
+                    }
                     const err = e?.response?.data?.error as ApiErrorTypes;
                     throw new PortalnesiaError(err.description,err.name,err.code);
                 }
@@ -115,13 +118,14 @@ class Portalnesia {
                 ...(withUpload ? {
                     'Content-Type':'multipart/form-data'
                 } : {}),
-                'Authentication': `Bearer ${token.access_token}`
+                'Authentication': `Bearer ${token.access_token}`,
+                'PN-Client-Id': this.client_id
             },
             cancelToken:this.cancelToken.token,
         }
         return config;
     }
-    private async get<D>(url: string,body?:object,axiosOptions?: AxiosRequestConfig) {
+    private async get<D>(url: string,body?:any,axiosOptions?: AxiosRequestConfig) {
         const fullUrl = `${url}${body ? qs.stringify(body) : ''}`
         try {
             const r = await this.axios.get<ResponseData<D>>(fullUrl,this.getAxiosOpts(axiosOptions))
@@ -133,7 +137,7 @@ class Portalnesia {
             return this.catchError(e) as unknown as D
         }
     }
-    private async delete<D>(url: string,body?:object,axiosOptions?: AxiosRequestConfig) {
+    private async delete<D>(url: string,body?:any,axiosOptions?: AxiosRequestConfig) {
         const fullUrl = `${url}${body ? qs.stringify(body) : ''}`
         try {
             const r = await this.axios.delete<ResponseData<D>>(fullUrl,this.getAxiosOpts(axiosOptions));
@@ -145,7 +149,7 @@ class Portalnesia {
             return this.catchError(e) as unknown as D
         }
     }
-    private async put<D>(url: string,body?:object,axiosOptions?: AxiosRequestConfig) {
+    private async put<D>(url: string,body?:any,axiosOptions?: AxiosRequestConfig) {
         try {
             const r = await this.axios.put<ResponseData<D>>(url,body,this.getAxiosOpts(axiosOptions));
             if(r?.data?.error) {
@@ -156,7 +160,7 @@ class Portalnesia {
             return this.catchError(e) as unknown as D
         }
     }
-    private async post<D>(url: string,body?:object,axiosOptions?: AxiosRequestConfig) {
+    private async post<D>(url: string,body?:any,axiosOptions?: AxiosRequestConfig) {
         try {
             const r = await this.axios.post<ResponseData<D>>(url,body,this.getAxiosOpts(axiosOptions));
             if(r?.data?.error) {
