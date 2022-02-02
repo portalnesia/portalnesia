@@ -1,5 +1,10 @@
 ---
+id: getting-started
 title: Getting Started
+keywords:
+    - Getting started
+    - Summary
+modified: 2022-02-02 17:29
 ---
 
 This describes the resources that make up the official Portalnesia REST API. If you have any problems or requests, please contact [Portalnesia Support](/contact)
@@ -54,7 +59,7 @@ For more detail about rate limit, see [Rate Limit Page](/developer/docs/rate-lim
 
 # Response
 
-Each response except authentication is wrapped in a data tag. This means if you have a response except authentication response, it will always be within the data field.
+Each response except authentication is wrapped in a data object. This means if you have a response except authentication response, it will always be within the data object.
 
 Some api with pagination response (/v1/blog, /v1/chord, etc) is wrapped with a pagination interface.
 
