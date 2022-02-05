@@ -31,7 +31,7 @@ You will need access to the following:
 
 # Endpoint
 
-The API is accessed by making HTTP requests to a specific version endpoint URL, in which GET or POST variables contain information about what you wish to access. Every endpoint is accessed via an SSL-enabled HTTPS (port 443), this is because everything is using OAuth 2.0.
+The API is accessed by making HTTP requests to a specific version endpoint URL, contain information about what you wish to access. Every endpoint is accessed via an SSL-enabled HTTPS (port 443), this is because everything is using OAuth 2.0.
 
 The stable HTTP endpoint for latest Portalnesia API is:
 
@@ -39,7 +39,7 @@ The stable HTTP endpoint for latest Portalnesia API is:
 https://api.portalnesia.com/v1
 ```
 
-# Authentication
+# Authorization
 
 To have the end user approve your app for access to their Portalnesia data and features, or to have your app fetch data from Portalnesia, you need to authorize your application. Portalnesia API uses OAuth 2.0 protocol for authorization.
 
@@ -47,21 +47,25 @@ To have the end user approve your app for access to their Portalnesia data and f
 curl -H "Authorization: Bearer ACCESS-TOKEN" -H "PN-Client-Id: YOUR-CLIENT-ID" https://api.portalnesia.com/v1
 ```
 
-For more detail about authentication, see [Authentication Page](/developer/docs/authentication)
+For more detail about authorization, see [Authorization](/developer/docs/authorization)
 
 # Rate Limit
 
-The Portalnesia API uses a credit allocation system to ensure fair distribution of capacity. Each application can allow **approximately 12.500 requests per day**. Authenticated requests are associated with the client id. To stop an app from requesting more data, we also limit requests to 60 requests per minute.
+The Portalnesia API uses a credit allocation system to ensure fair distribution of capacity. Each application can allow **approximately 300 requests per 15 minutes**. Authenticated requests are associated with the client id. To stop an app from requesting more data, we also limit requests to 60 requests per minute.
 
 There are some endpoints that have their own request limits which you can read about in the API Reference. The remaining credits from this endpoint will be shown with each request response in the `X-RateLimit-Limit` HTTP header.
 
-For more detail about rate limit, see [Rate Limit Page](/developer/docs/rate-limit)
+For more detail about rate limit, see [Rate Limit](/developer/docs/rate-limit)
 
-# Response
+# Request and Response
 
 Each response except authentication is wrapped in a data object. This means if you have a response except authentication response, it will always be within the data object.
 
 Some api with pagination response (/v1/blog, /v1/chord, etc) is wrapped with a pagination interface.
+
+For more detail about request and response, See [Request and Response](/developer/docs/request-response)
+
+You can also see the error code and information about error on [Error Page](/developer/docs/errors)
 
 ### Success Response Example
 
