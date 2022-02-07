@@ -47,7 +47,7 @@ The name of your application. The name must not contain the word `portalnesia`
 ### App Description
 
 ***Optional***   
-Brief description of your application. Try to be easy to understand, so that users can know your application in genera; when authenticating
+Brief description of your application. Try to be easy to understand, so that users can know your application when authenticating
 
 
 ### Wesite URL
@@ -73,7 +73,7 @@ Scope that your application requests. The available scope is a list of scopes th
 ### Authorization Flows
 
 ***Optional***  
-Oauth2 authorization flows used by your application. Explanation of each flows, can be read [here](/developer/docs/authentication)
+Oauth2 authorization flows used by your application. Explanation of each flows, can be read [here](/developer/docs/authorization)
 
 
 ### Callback URI
@@ -83,12 +83,12 @@ Redirect url when your application asks for user authorization (`redirect_uri`).
 
 ### Terms of Service
 
-***Optional*** but strongly recommended.   
+***Optional but strongly recommended***   
 Terms of service url of your application. So the user knows what the terms of service are in your application before authorizing
 
 ### Privacy Policy
 
-***Optional*** but strongly recommended.   
+***Optional but strongly recommended***   
 Privacy policy url of your application. So the user knows how the data on Portalnesia will be used by your application
 
 ### Test Users

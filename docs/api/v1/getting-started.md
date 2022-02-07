@@ -14,7 +14,7 @@ This describes the resources that make up the official Portalnesia REST API. If 
 You will need access to the following:
 
 - Portalnesia account
-- Registered Portalnesia App with `basic` scope
+- Registered Portalnesia App
 
 # Register Application
 
@@ -27,7 +27,7 @@ You will need access to the following:
 - **Client ID** is the unique identifier of your application.
 - **Client Secret** is the key that you pass in secure calls to the Portalnesia Accounts and REST API services.
 
-> Client secret key is shown ***only once***. **Always store the client secret key securely**. If you forget the secret key or if you suspect that the secret key has been compromised, you have to regenerate it immediately by clicking the link on the edit settings view
+> Client secret key is shown ***only once***. **Always store the client secret key securely**. If you forget the secret key or if you suspect that the secret key has been compromised, you have to regenerate it immediately by clicking the `regenerate` button on the apps detail view
 
 For more information about app configuration, see [App Settings](/developer/docs/app-settings)
 
