@@ -46,8 +46,8 @@ import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js
 import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript.js';
 import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript.js';
 import Table from '@ckeditor/ckeditor5-table/src/table.js';
-import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
-import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+//import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+//import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation.js';
 import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
@@ -104,8 +104,8 @@ Editor.builtinPlugins = [
 	Subscript,
 	Superscript,
 	Table,
-	TableCellProperties,
-	TableProperties,
+	//TableCellProperties,
+	//TableProperties,
 	TableToolbar,
 	TextTransformation,
 	TodoList,
@@ -173,9 +173,27 @@ Editor.defaultConfig = {
 		contentToolbar: [
 			'tableColumn',
 			'tableRow',
-			'mergeTableCells',
-			'tableCellProperties',
-			'tableProperties'
+			'mergeTableCells'
+		]
+	},
+	codeBlock: {
+		languages: [
+			{ language: 'plaintext', label: 'Plain text' },
+			{ language: 'c', label: 'C' },
+			{ language: 'cs', label: 'C#' },
+			{ language: 'cpp', label: 'C++' },
+			{ language: 'css', label: 'CSS' },
+			{ language: 'diff', label: 'Diff' },
+			{ language: 'html', label: 'HTML' },
+			{ language: 'java', label: 'Java' },
+			{ language: 'javascript', label: 'JavaScript' },
+			{ language: 'json', label: 'JSON' },
+			{ language: 'markdown', label: 'Markdown' },
+			{ language: 'php', label: 'PHP' },
+			{ language: 'python', label: 'Python' },
+			{ language: 'ruby', label: 'Ruby' },
+			{ language: 'typescript', label: 'TypeScript' },
+			{ language: 'xml', label: 'XML' }
 		]
 	},
 	portalnesia:{
