@@ -20,16 +20,22 @@ If you’re using the authorization code flow in a mobile app, or any other type
 
 This guide assumes that you have created an app following the [app settings docs](/developer/docs/app-settings).
 
+Base uri for all authorization requests is 
+
+```
+https://accounts.portalnesia.com
+```
+
 
 # Request User Authorization
 
-The first step is to request authorization from the user, so our app can access to the Portalnesia resources in behalf that user. To do so, our application must build and send a GET request to the `https://accounts.portalnesia.com/oauth/authorization` endpoint with the following parameters:
+The first step is to request authorization from the user, so our app can access to the Portalnesia resources in behalf that user. To do so, our application must build and send a GET request to the `/oauth/authorization` endpoint with the following parameters:
 
 | QUERY PARAMETER | VALUE |
 | --- | --- |
 | client_id | *Required*<br />The Client ID generated after registering your application. |
 | response_type | *Required*<br />Set to `code` |
-| redirect_uri | *Required*<br />The URI to redirect to after the user grants or denies permission. This URI needs to have been entered in the `Callback URI` allowlist that you specified when you registered your application (See the app settings docs). The value of redirect_uri here must exactly match one of the values you entered when you registered your application, including upper or lowercase, terminating slashes, and such. |
+| redirect_uri | *Required*<br />The URI to redirect to after the user grants or denies permission. This URI needs to have been entered in the `Callback URI` allowlist that you specified when you registered your application (See the [app settings guide](/developer/docs/app-settings)). The value of redirect_uri here must exactly match one of the values you entered when you registered your application, including upper or lowercase, terminating slashes, and such. |
 | state | *Optional, but strongly recommended*<br />This provides protection against attacks such as cross-site request forgery. See [RFC-6749](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1). |
 | scope | *Optional*<br />A space-separated list of scopes. If no scopes are specified, authorization will be granted only with default `basic` scope. |
 | show_dialog | *Optional*<br />Whether or not to force the user to approve the app again if they’ve already done so. If `false` (default), a user who has already approved the application may be automatically redirected to the URI specified by `redirect_uri`. If `true`, the user will not be automatically redirected and will have to approve the app again. |
@@ -85,7 +91,7 @@ If the user accepts your request, then the user is redirected back to the applic
 | code | An authorization code that can be exchanged for an Access Token. |
 | state | The value of the state parameter supplied in the request. |
 
-Example, if your `redirect_uri` is `https://domain/callback`:
+Example, if your `redirect_uri` is *https://domain/callback*:
 
 ```
 https://domain/callback?code=NApCCgagq..BkWtQ&state=34fFs29kd09
@@ -98,7 +104,7 @@ If the user does not accept your request or if an error has occurred, the respon
 | error | The reason authorization failed, for example: “access_denied” |
 | state | The value of the state parameter supplied in the request. |
 
-Example, if your `redirect_uri` is `https://domain/callback`:
+Example, if your `redirect_uri` is *https://domain/callback*:
 
 ```
 https://domain/callback?error=access_denied&state=34fFs29kd09
@@ -106,9 +112,9 @@ https://domain/callback?error=access_denied&state=34fFs29kd09
 
 # Request Access Token
 
-If the user accepted your request, then your app is ready to exchange the authorization code for an Access Token. It can do this by making a POST request to the `https://accouts.portalnesia.com/oauth/token` endpoint.
+If the user accepted your request, then your app is ready to exchange the authorization code for an Access Token. It can do this by making a POST request to the `/oauth/token` endpoint.
 
-The body of this POST request must contain the following parameters encoded in application/x-www-form-urlencoded:
+The body of this POST request must contain the following parameters encoded in `application/x-www-form-urlencoded`:
 
 | REQUEST BODY PARAMETER | VALUE |
 | --- | --- |
@@ -141,7 +147,7 @@ On success, the response will have a 200 OK status and the following JSON data i
 | scope | *string* | A space-separated list of scopes which have been granted for this `access_token` |
 | expires_in | *int* | 	The time period (in seconds) for which the Access Token is valid. |
 | refresh_token | *string* | A token that can be sent to the Portalnesia Oauth2 service in place of an authorization code. For details, see [Refresh tokens](#request-refreshed-access-token) |
-| id_token | *string* | A `JWT` that contains identity information about the user that is digitally signed by Portalnesia. See Obtain user information from the ID token |
+| id_token | *string* | A `JWT` that contains identity information about the user that is digitally signed by Portalnesia. See [Obtain user information from the ID token](#) |
 
 The following example, shows how the successful response looks like:
 
@@ -160,7 +166,7 @@ The following example, shows how the successful response looks like:
 
 Access tokens are deliberately set to expire after a short time, after which new tokens may be granted by supplying the refresh token originally obtained during the authorization code exchange.
 
-In order to refresh the token, a `POST` request must be sent with the following body parameters encoded in `application/x-www-form-urlencoded`:
+In order to refresh the token, a `POST` request must be sent to the endpoint `/oauth/token` with the following body parameters encoded in `application/x-www-form-urlencoded`:
 
 | REQUEST BODY PARAMETER | VALUE |
 | --- | --- |

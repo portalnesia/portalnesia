@@ -79,7 +79,7 @@ After created an apps, now configure it.
 - ### Callback URI
 
   ***Optional***     
-  Redirect url when your application asks for user authorization. If the value of `callback_uri` is empty, your app cannot access for authorization
+  Redirect url when your application asks for user authorization (`redirect_uri`). If the value of *callback_uri* is empty, your app cannot access for authorization
 
 - ### Terms of Service
 

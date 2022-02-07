@@ -19,8 +19,8 @@ You will need access to the following:
 # Register Application
 
 1. On [your dashboard](/developer/apps), click Create App.
-2. Enter **Aplication Name** and **Application Description** and then click **CREATE**. Your application is registered with default `basic` scope, and the app view opens
-3. On the app view, click **Edit Settings** to view and update your app settings
+2. Enter **Aplication Name** and **Application Description** and then click **CREATE**. Your application is registered with default `basic` scope
+3. Click **pencil** icon to view and update your app settings
 
 ***Note:*** Find your `Client ID` and `Client Secret`. You need them in the authentication phase.
 
@@ -28,6 +28,8 @@ You will need access to the following:
 - **Client Secret** is the key that you pass in secure calls to the Portalnesia Accounts and REST API services.
 
 > Client secret key is shown ***only once***. **Always store the client secret key securely**. If you forget the secret key or if you suspect that the secret key has been compromised, you have to regenerate it immediately by clicking the link on the edit settings view
+
+For more information about app configuration, see [App Settings](/developer/docs/app-settings)
 
 # Endpoint
 
