@@ -12,7 +12,7 @@ keywords:
 modified: 2022-02-05 19:27
 ---
 
-# Introduce
+# Introducing
 
 Authorization refers to the process of granting a user or application access permissions to Portalnesia data and features. Portalnesia implements the OAuth 2.0 authorization framework.
 
