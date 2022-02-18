@@ -129,7 +129,7 @@ The following example, shows how the successful response looks like:
   "id_token": "eyJhbGcI6IkpXVCJ9...Ok6yJV_adQssw5c",
   "access_token": "NgCXRK...MzYjw",
   "token_type": "Bearer",
-  "scope": "basic blog chord",
+  "scope": "openid basic blog chord",
   "expires_in": 3600,
   "refresh_token": "NgAagA...Um_SHo"
 }

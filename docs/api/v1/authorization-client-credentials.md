@@ -50,6 +50,7 @@ If everything goes well, you’ll receive a response similar to this containing 
   "token_type": "bearer",
   "scope": "basic blog chord",
   "expires_in": 3600,
+  "refresh_token": "NgAagA...Um_SHo"
 }
 ```
 

@@ -109,3 +109,5 @@ typings/
 *-credentials.json
 *-pn.ts
 *.exp
+sample/config.json
+sample/**/*/config.js

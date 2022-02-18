@@ -1,0 +1,10 @@
+{
+  /* YOUR CLIENT_ID */
+  "client_id":"",
+  /* YOUR CLIENT_SECRET, ONLY USED IN SERVER-SIDE EXAMPLE */
+  "client_secret":"",
+  /* YOUR REDIRECT_URI, ONLY USED WITH AUTHORIZATION_CODE FLOW */
+  "redirect_uri":"",
+  /* ARRAY OF YOUR APPROVED SCOPES */
+  "scope_approved":[""]
+}

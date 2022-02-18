@@ -66,7 +66,7 @@ If your application makes an http request to Portalnesia REST API on the browser
 ### Scopes
 
 ***Optional***  
-Scope that your application requests. The available scope is a list of scopes that have been approved for your portalnesia account. Read more about scope [here](/developer/docs/scopes).
+Scope that your application requests. The available scope is a list of scopes that have been approved for your portalnesia apps. Read more about scope [here](/developer/docs/scopes).
 
 
 

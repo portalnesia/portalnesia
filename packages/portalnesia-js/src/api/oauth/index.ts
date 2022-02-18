@@ -1,103 +1,229 @@
+/**
+ * @module
+ * Portalnesia OAuth API
+ */
 import PortalnesiaError from "@src/exception/PortalnesiaException";
-import Portalnesia from "@src/portalnesia";
-import qs from "qs";
-import { AuthorizationOptions, TokenErrorResponse, TokenOptions, TokenResponse,RevokeTokenOptions,RevokeResponse } from "./type";
+import Portalnesia from "@src/server";
+import BaseApi from "../base";
+import {ModuleOptions,AuthorizationCode,ClientCredentials,Token, AccessToken} from 'simple-oauth2'
+import pkceChallenge from 'pkce-challenge'
+import IdTokenVerifier from 'idtoken-verifier'
 
-/**
- * Get Portalnesia Authorization URL
- * @param client {@link Portalnesia | Portalnesia Instance}
- * @param options {@link AuthorizationOptions | Authorization Options}
- * @returns string Portalnesia Authorization URL
- */
-export function getAuthorizationUrl(options: AuthorizationOptions): string {
-    return `${Portalnesia.ACCOUNT_URL}/oauth/authorization?${qs.stringify(options)}`;
+export type IScopes = "basic" | "openid" |  "email" |  "blog" |  "comments" |  "chord" | "files" |  "geodata" |  "likes" |  "messages" |  "quiz" |  "toko" |  "twibbon" |  "thread" |  "url-shortener" | "user"
+
+export type IGrantType = "authorization_code" | "client_credentials"
+
+
+export type AuthorizationOptions = {
+    scope?: IScopes[],
+    state?: string
+    code_challenge?: string
+}
+export type AuthorizationResponse = {
+    code?: string,
+    state?: string,
+    error?: string
 }
 
-/**
- * Get {@link TokenResponse | Token Object}
- * @param client {@link Portalnesia | Portalnesia Instance}
- * @param options {@link TokenOptions | Token Options}
- * @returns object {@link TokenResponse | Token Response}
- * @throws Error {@link PortalnesiaError}
- */
-export async function getToken(client: Portalnesia,options: TokenOptions): Promise<TokenResponse> {
-    if(!client) throw new PortalnesiaError("Missing Portalnesia instance");
-    if(!client.client_secret && options.grant_type === 'client_credentials') throw new PortalnesiaError("Missing `client_secret`")
-    try {
-        const r = await client.axios.post<TokenResponse|TokenErrorResponse>(client.getFullUrl('/oauth/token','accounts'),qs.stringify({...options,redirect_uri:client.options.redirect_uri}),{
-            headers:{
-                'PN-Client-Id':client.client_id,
-                'Content-Type':'application/x-www-form-urlencoded',
-                ...(options.code_verifier ? {} : {
-                    'Authorization':Buffer.from(`${client.client_id}:${client.client_secret}`).toString('base64')
-                })
-            }
-        })
-        if(typeof (r.data as TokenErrorResponse)?.error !== 'undefined') {
-            const err = r.data as TokenErrorResponse;
-            throw new PortalnesiaError(err.error_description,err.error);
-        }
-        const token = r.data as TokenResponse;
-        client.token = token;
-        return token;
-    } catch(err: any) {
-        return client.catchError(err) as unknown as TokenResponse;
+export type TokenOptions = {
+    grant_type: IGrantType,
+    code?: string,
+    code_verifier?: string
+    scope?: string[]
+}
+export type RevokeTokenOptions = {refresh_token?:string,access_token?:string}
+
+export type TokenResponse = {
+    access_token: string,
+    token_type: string,
+    scope: string,
+    expires_in: number,
+    id_token?: string,
+    refresh_token: string
+}
+export type TokenErrorResponse = {
+    error: string,
+    error_description: string,
+    error_uri?: string
+}
+export type RevokeResponse = {
+    revoked: boolean
+}
+
+export type TokenType = 'refresh_token'|'access_token'
+
+declare module 'simple-oauth2' {
+    export interface AuthorizationTokenConfig {
+        [key: string]: string|undefined
+    }
+    export interface Token extends TokenResponse {
+        
     }
 }
 
 /**
- * Refresh current {@link Portalnesia.token | Portalnesia Token}
- * @param client {@link Portalnesia | Portalnesia Instance}
- * @param refresh_token {@link TokenResponse.refresh_token | string} from your current {@link Portalnesia.token | Portalnesia Token}
- * @returns object {@link TokenResponse | Token Response}
- * @throws Error {@link PortalnesiaError}
+ * Portalnesia OAuth2 Service
+ * @class OAuth
+ * @extends {BaseApi}
  */
-export async function refreshToken(client: Portalnesia,refresh_token: string): Promise<TokenResponse> {
-    try {
-        const r = await client.axios.post<TokenResponse|TokenErrorResponse>(client.getFullUrl('/oauth/token','accounts'),qs.stringify({refresh_token,grant_type:'refresh_token',redirect_uri:client.options.redirect_uri}),{
-            headers:{
-                'PN-Client-Id':client.client_id,
-                'Authorization':`Bearer ${client.token?.access_token}`,
-                'Content-Type':'application/x-www-form-urlencoded'
-            }
-        })
-        if(typeof (r.data as TokenErrorResponse)?.error !== 'undefined') {
-            const err = r.data as TokenErrorResponse;
-            throw new PortalnesiaError(err.error_description,err.error);
-        }
-        const token = r.data as TokenResponse;
-        client.token = token;
-        return token;
-    } catch(err: any) {
-        return client.catchError(err) as unknown as TokenResponse;
-    }
-}
+export default class OAuth extends BaseApi {
+    private client_auth: AuthorizationCode
+    private client_creds: ClientCredentials
 
-/**
- * Revoke current refresh_token or access_token
- * @param client {@link Portalnesia | Portalnesia Instance}
- * @param options {@link RevokeTokenOptions | Revoke Token Options}
- * @returns object {@link RevokeResponse | Revoke Response}
- * @throws Error {@link PortalnesiaError}
- */
-export async function revokeToken(client: Portalnesia,options:RevokeTokenOptions): Promise<RevokeResponse> {
-    if(!client) throw new PortalnesiaError("Missing Portalnesia instance");
-    try {
-        const r = await client.axios.post<RevokeResponse|TokenErrorResponse>(client.getFullUrl('/oauth/revoke','accounts'),qs.stringify({...options,redirect_uri:client.options.redirect_uri}),{
-            headers:{
-                'PN-Client-Id':client.client_id,
-                'Authorization':`Bearer ${client.token?.access_token}`,
-                'Content-Type':'application/x-www-form-urlencoded'
+    constructor(portalnesia: Portalnesia) {
+        super(portalnesia);
+        const config: ModuleOptions = {
+            client:{
+                id:portalnesia.options.client_id,
+                secret:portalnesia.options.client_secret||'',
+            },
+            auth:{
+                tokenHost:Portalnesia.ACCOUNT_URL,
+                tokenPath:'/oauth/token',
+                revokePath:'/oauth/revoke',
+                authorizeHost:Portalnesia.ACCOUNT_URL,
+                authorizePath:'/oauth/authorization'
             }
-        })
-        if(typeof (r.data as TokenErrorResponse)?.error !== 'undefined') {
-            const err = r.data as TokenErrorResponse;
-            throw new PortalnesiaError(err.error_description,err.error);
         }
-        const token = r.data as RevokeResponse;
-        if(token.revoked) client.token = undefined;
-        return token;
-    } catch(err: any) {
-        return client.catchError(err) as unknown as RevokeResponse;
+        this.client_auth = new AuthorizationCode(config);
+        this.client_creds = new ClientCredentials(config)
+    }
+
+    /**
+     * `authorization_code`
+     * 
+     * Get Portalnesia Authorization URL
+     * @param {AuthorizationOptions} options {@link AuthorizationOptions | Authorization Options}
+     * @returns {string} Portalnesia Authorization URL
+     */
+    getAuthorizationUrl(options: AuthorizationOptions): string {
+        return this.client_auth.authorizeURL({client_id:this.pn.options.client_id,redirect_uri:this.pn.options.redirect_uri,...options})
+    }
+
+    /**
+     * `authorization_code`
+     * 
+     * Generate Code Verifier and Code Challenge
+     * @returns {{
+     *  code_challenge: string,
+     *  code_verifier: string
+     * }} {
+     *  code_challenge: string,
+     *  code_verifier: string
+     * }
+     * 
+     */
+    generatePKCE(): {
+        code_challenge: string;
+        code_verifier: string;
+    } {
+        return pkceChallenge();
+    }
+
+    /**
+     * `authorization_code` or `client_credentials`
+     * 
+     * Set token from previously saved token
+     * @param {IGrantType} grantTypes {@link IGrantType | Grant type}
+     * @param {TokenResponse} token {@link TokenResponse | Token object}
+     */
+    setToken(grantTypes: IGrantType,token: Token) {
+        let tokens: AccessToken;
+        if(grantTypes === 'authorization_code') {
+            tokens = this.client_auth.createToken(token);
+        } else {
+            tokens = this.client_creds.createToken(token);
+        }
+        this.pn.setToken(tokens)
+    }
+
+    /**
+     * `authorization_code` or `client_credentials`
+     * 
+     * Get {@link TokenResponse | Token Object} from Portalnesia OAuth2 Server
+     * @param {TokenOptions} options {@link TokenOptions | Token Options}
+     * @returns {Promise<TokenResponse>} token {@link TokenResponse | Token Object}
+     * @throws {PortalnesiaError} Error {@link PortalnesiaError}
+     */
+    async getToken(options: TokenOptions): Promise<TokenResponse> {
+        const {grant_type,code,scope:scopes,...rest} = options;
+        if(grant_type === 'client_credentials' && !this.pn.options.client_secret) throw new PortalnesiaError("Missing `client_secret`")
+        const scope = scopes ? scopes.join(" ") : "";
+
+        if(grant_type === 'authorization_code') {
+            try {
+                const token = await this.client_auth.getToken({code:code||'',client_id:this.pn.options.client_id,redirect_uri:this.pn.options.redirect_uri||'',scope,...rest});
+                this.pn.setToken(token);
+                return token.token;
+            } catch(e: any) {
+                throw new PortalnesiaError(e?.message,"Token error")
+            }
+        } else {
+            try {
+                const token = await this.client_creds.getToken({client_id:this.pn.options.client_id,redirect_uri:this.pn.options.redirect_uri||'',scope});
+                this.pn.setToken(token);
+                return token.token;
+            } catch(e: any) {
+                throw new PortalnesiaError(e?.message,"Token error")
+            }
+        }
+    }
+
+    /**
+     * `authorization_code` or `client_credentials`
+     * 
+     * Refreshes the current access token
+     * @returns {Promise<TokenResponse>} token {@link TokenResponse | Token Object}
+     * @throws {PortalnesiaError} Error {@link PortalnesiaError}
+     */
+    async refreshToken(): Promise<TokenResponse> {
+        if(!this.pn.token) throw new PortalnesiaError("Missing `token`")
+
+        try {
+            const token = await this.pn.token.refresh();
+            this.pn.setToken(token);
+            return token.token;
+        } catch(e: any) {
+            throw new PortalnesiaError(e?.message,"Token error")
+        }
+    }
+
+    /**
+     * `authorization_code` or `client_credentials`
+     * 
+     * Revokes either the access or refresh token or both
+     * @param {TokenType} type {@link TokenType | Token Type}
+     * @returns {Promise<void>} void
+     * @throws {PortalnesiaError} Error {@link PortalnesiaError}
+     */
+    async revokeToken(type?: TokenType): Promise<void> {
+        if(!this.pn.token) throw new PortalnesiaError("Missing `token`");
+
+        try {
+            if(type) await this.pn.token.revoke(type)
+            else await this.pn.token.revokeAll();
+            return;
+        } catch(e) {
+            return;
+        }
+    }
+
+    /**
+     * Verify id_token
+     * @param {string} idtoken id_token retrieved from `access_token`
+     * @returns {object|null} payload object if any, or null 
+     */
+    verifyIdToken(idtoken: string): Promise<object|null> {
+        const verifier = new IdTokenVerifier({
+            issuer:'https://portalnesia.com',
+            jwksURI:'https://api.portalnesia.com/v1/certs',
+            audience:this.pn.options.client_id
+        })
+        return new Promise<object|null>((res,rej)=>{
+            verifier.verify(idtoken,(err,payload)=>{
+                if(err) rej(new PortalnesiaError(err?.message,err?.name));
+                res(payload);
+            })
+        })
     }
 }

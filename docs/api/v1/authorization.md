@@ -43,5 +43,5 @@ The following table summarizes the flows behaviors:
 | --- | --- | --- | --- |
 | Authorization code | Yes | Yes | Yes |
 | Authorization code with PKCE | Yes | No | Yes |
-| Client credentials | No | Yes | No |
+| Client credentials | No | Yes | Yes |
 

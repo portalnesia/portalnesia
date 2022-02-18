@@ -1,29 +1,63 @@
-import PortalnesiaError from "@src/exception/PortalnesiaException";
-import Portalnesia from "@src/portalnesia";
-import { ResponsePagination } from "@src/type";
-import { BasicBlog,Blog } from "./type";
-
-
 /**
- * Get all of Portalnesia Blog
- * @param client {@link Portalnesia | Portalnesia Instance}
- * @param page number Number of page
- * @param per_page number Total data per page
- * @returns object {@link ResponsePagination | Pagination} of {@link BasicBlog | Blog}
+ * @module
+ * Portalnesia Blog API
  */
-export async function getAllBlog(client: Portalnesia,page=1,per_page=15): Promise<ResponsePagination<BasicBlog>> {
-    if(!client) throw new PortalnesiaError("Missing Portalnesia instance");
-    return await client.request<ResponsePagination<BasicBlog>>('get',client.getFullUrl('/blog'),{page,per_page});
+import { ResponsePagination, ISeen,IDate } from "@api/base";
+import BaseApi from "../base";
+import {BasicUser} from '@src/api/user'
+
+export const BLOG_CATEGORY = ["uncategory","tutorial","blog"];
+
+export type BasicBlog = {
+    id:number,
+    title:string,
+    created: IDate,
+    image: string,
+    slug:string,
+    link:string,
+    seen:ISeen,
+    category: string,
+    tags: string[],
+    publish: boolean,
+    user:BasicUser
+}
+
+export interface IBlog extends BasicBlog {
+    text: string;
+    format:string;
+    last_modified:IDate;
+    block: boolean;
+    liked?: boolean;
+    comment_count?: ISeen;
+}
+
+export interface BlogDashboard extends IBlog {
+
 }
 
 /**
- * Get Blog
- * @param client {@link Portalnesia | Portalnesia Instance}
- * @param slug string `slug` of blog
- * @returns object {@link Blog | Blog Response}
+ * Portalnesia Blog API
+ * @class Blog
+ * @extends {BaseApi}
  */
-export async function getBlog(client: Portalnesia,slug: string): Promise<Blog> {
-    if(!client) throw new PortalnesiaError("Missing Portalnesia instance");
-    return await client.request<Blog>('get',client.getFullUrl(`/blog/${slug}`));
+export default class Blog extends BaseApi {
+    /**
+     * Get all of Portalnesia Blog
+     * @param page number Number of page
+     * @param per_page number Total data per page
+     * @returns object {@link ResponsePagination | Pagination} of {@link BasicBlog | Blog}
+     */
+    async getAllBlog(page=1,per_page=15): Promise<ResponsePagination<BasicBlog>> {
+        return await this.request<ResponsePagination<BasicBlog>>('get',this.getFullUrl('/blog'),{page,per_page});
+    }
+
+    /**
+     * Get Blog
+     * @param slug string `slug` of blog
+     * @returns object {@link IBlog | Blog Response}
+     */
+    async getBlog(slug: string): Promise<IBlog> {
+        return await this.request<IBlog>('get',this.getFullUrl(`/blog/${slug}`));
+    }
 }
 

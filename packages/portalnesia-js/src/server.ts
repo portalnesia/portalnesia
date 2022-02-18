@@ -1,121 +1,125 @@
 /**
  * @module
  * Portalnesia API
- */
+*/
 import { PortalnesiaOptions,ResponseData,ApiErrorTypes } from "@src/api/base";
+import Blog from "./api/blog";
+import OAuth from "./api/oauth";
 import axiosStatic,{ AxiosInstance,AxiosError,CancelTokenSource, AxiosRequestConfig } from "axios";
 import getAxiosInstance from "@api/base/axios";
 import qs from 'qs'
-import OAuth from "./api/oauth";
 import PortalnesiaError from "@src/exception/PortalnesiaException";
 import CatchApiError from '@src/exception/ApiException'
 import { AccessToken } from "simple-oauth2";
 
 export * from '@api/base'
-
+ 
 /**
- * Portalnesia Client Instance
- * @class Portalnesia
- */
+* Portalnesia Server-Side Instance
+* @class Portalnesia
+*/
 class Portalnesia {
-  /**
-  * Token
-  * @property {@link AccessToken}
-  * @private
-  */
+   /**
+   * Token
+   * @property {@link AccessToken}
+   * @private
+   */
   private tokens?: AccessToken
   
-  /**
-  * API Version
-  * @property string
-  * @readonly
-  */
+   /**
+   * API Version
+   * @property string
+   * @readonly
+   */
   readonly version: string;
   
-  /**
-  * Axios instance
-  * @property object {@link AxiosInstance}
-  * @private
-  */
+   /**
+   * Axios instance
+   * @property object {@link AxiosInstance}
+   * @private
+   */
   private axios: AxiosInstance;
   
-  /**
-  * Portalnesia Options
-  * @property object {@link PortalnesiaOptions}
-  * @readonly
-  */
+   /**
+   * Portalnesia Options
+   * @property object {@link PortalnesiaOptions}
+   * @readonly
+   */
   readonly options: PortalnesiaOptions
   
   private cancelToken: CancelTokenSource;
+ 
+  readonly blog: Blog
   readonly oauth: OAuth
-
+ 
   static API_URL = "https://api.portalnesia.com";
   static ACCOUNT_URL = "https://accounts.portalnesia.com"
-
+ 
   /**
- * @constructor
- * @param options {@link PortalnesiaOptions | Portalnesia Options}
- */
+  * @constructor
+  * @param options {@link PortalnesiaOptions | Portalnesia Options}
+  */
   constructor(options: PortalnesiaOptions) {
     this.options = options;
     this.axios = getAxiosInstance(options.axios);
     this.version = `v${options.version||1}`;
     const cancelToken=axiosStatic.CancelToken;
     this.cancelToken=cancelToken.source();
-    this.oauth = new OAuth(this as any)
+    this.blog = new Blog(this)
+    this.oauth = new OAuth(this)
   }
-
+ 
   /**
-  * Token
-  * @property {@link AccessToken}
-  * @readonly
+   * Token
+   * @property {@link AccessToken}
+   * @readonly
   */
   get token() {
     return this.tokens;
   }
-
+ 
   /**
-   * 
-   * @internal 
-   * @returns {string} string
-   */
+  * 
+  * @internal 
+  * @returns {string} string
+  */
   getFullUrl(path?: string,type:'api'|'accounts'='api'): string {
     if(type === 'accounts') return `${Portalnesia.ACCOUNT_URL}${path}`
     return `${Portalnesia.API_URL}/${this.version}${path}`
   }
-
+ 
   /**
-   * Internal function. If you want to set token, go to {@link OAuth.setToken | OAuth} instead
-   * @internal
-   * @param {AccessToken} token 
-   */
-  setToken(token: AccessToken) {
-    this.tokens = token;
-  }
-
+  * Internal function. If you want to set token, go to {@link OAuth.setToken | OAuth} instead
+  * @internal
+  * @param {AccessToken} token 
+  */
+   setToken(token: AccessToken) {
+     this.tokens = token;
+   }
+ 
   /**
-   * Send request to Portalnesia
-   * @template D Response Data for type D
-   * @template B Body request
-   * @param {string} method HTTP method
-   * @param {string} url Portalnesia API URL
-   * @param {B} body body/url params
-   * @param {AxiosRequestConfig} axiosOptions optional axios options
-   * @returns {Promise<D>} Promise of D
-   */
+  * Send request to Portalnesia
+  * @template D Response Data for type D
+  * @template B Body request
+  * @param {string} method HTTP method
+  * @param {string} url Portalnesia API URL
+  * @param {B} body body/url params
+  * @param {AxiosRequestConfig} axiosOptions optional axios options
+  * @returns {Promise<D>} Promise of D
+  */
   request<D=any,B=any>(method: 'post'|'get'|'delete'|'put',url: string,body?:B,axiosOptions?: AxiosRequestConfig): Promise<D> {
     this.validateToken();
     if(typeof this[method] !== 'function') throw new Error();
     return this[method]<D>(url,body,axiosOptions);
   }
-
+ 
   /**
-   * 
-   * @template D Response Data for type D
-   * @param {string} url Portalnesia API URL
-   * @param {FormData} body body/url params
-   * @param {AxiosRequestConfig} axiosOptions optional axios options
-   */
+  * 
+  * @template D Response Data for type D
+  * @param {string} url Portalnesia API URL
+  * @param {FormData} body body/url params
+  * @param {AxiosRequestConfig} axiosOptions optional axios options
+  */
   async upload<D=any>(url: string,body?:FormData,axiosOptions?: AxiosRequestConfig): Promise<D> {
     this.validateToken();
     try {
@@ -128,11 +132,11 @@ class Portalnesia {
       return this.catchError(e) as unknown as D
     }
   }
-
+ 
   private validateToken() {
     if(!this.tokens || this.tokens.expired()) throw new PortalnesiaError("Missing token");
   }
-
+ 
   private catchError(err: any) {
     if(err instanceof CatchApiError) {
       throw new PortalnesiaError(err.message,err.name,err.code)
