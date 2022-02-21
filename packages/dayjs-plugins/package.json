@@ -1,0 +1,35 @@
+{
+  "name": "@portalnesia/dayjs-plugins",
+  "version": "1.0.0",
+  "description": "Custom Dayjs Plugins for Portalnesia",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/portalnesia/portalnesia.git"
+  },
+  "keywords": [
+    "dayjs",
+    "plugins",
+    "date"
+  ],
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "author": "Putu Aditya <aditya@portalnesia.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/portalnesia/portalnesia/issues"
+  },
+  "homepage": "https://github.com/portalnesia/portalnesia#readme",
+  "dependencies": {
+    "dayjs": "^1.10.7"
+  },
+  "devDependencies": {
+    "typescript": "^4.5.5"
+  }
+}

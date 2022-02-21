@@ -1,0 +1,12 @@
+{
+  "name": "portalnesia-dayjs-example",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/portalnesia/portalnesia",
+  "author": "Putu Aditya <aditya@portalnesia.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@portalnesia/dayjs-plugins": "link:../"
+  }
+}
