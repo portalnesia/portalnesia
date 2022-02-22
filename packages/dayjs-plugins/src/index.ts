@@ -26,9 +26,9 @@ declare module 'dayjs' {
      * Get portalnesia custom format
      * @param {IPNFormat} type type format
      * @example
-     *  - minimal: Jan 01,2022
-     *  - fulldate: January 01, 2022
-     *  - full: January 01, 2022, 10:30
+     *  - minimal: 01 Jan 2022
+     *  - fulldate: 01 January 2022
+     *  - full: 01 January 2022, 10:30
      *  - time: 10:30
      */
     pn_format(type?:IPNFormat): string
@@ -53,9 +53,9 @@ const portalnesiaDayjs: dayjs.PluginFunc = (o,c,d)=>{
       let format = datetime.fromNow();
   
       if(/months? ago$/.test(format)) {
-          format = datetime.format("MMM DD");
+          format = datetime.format("DD MMM");
       } else if(/years? ago$/.test(format)) {
-          format = datetime.format("MMM DD, YYYY");
+          format = datetime.format("DD MMM YYYY");
       }
       return {
           format,
@@ -69,13 +69,13 @@ const portalnesiaDayjs: dayjs.PluginFunc = (o,c,d)=>{
   p.pn_format = function(type: IPNFormat='minimal') {
     let format: string;
     if(type == 'minimal') {
-      format="MMM DD, YYYY"
+      format="DD MMM YYYY"
     } else if(type === 'fulldate') {
-      format = "MMMM DD, YYYY"
+      format = "DD MMMM YYYY"
     } else if(type == 'time') {
       format = "HH:mm";
     } else {
-      format = "MMMM D, YYYY, HH:mm"
+      format = "DD MMMM YYYY, HH:mm"
     }
     return this.format(format);
   }
@@ -93,14 +93,14 @@ const portalnesiaDayjs: dayjs.PluginFunc = (o,c,d)=>{
     const thn2 = date.year();
 
     if(tanggal1 == tanggal2 && waktu1!=waktu2) {
-      return `${waktu1} - ${waktu2}, ${this.locale('id').format('DD MMMM YYYY')}`
+      return `${waktu1} - ${waktu2}, ${this.format('DD MMMM YYYY')}`
     }
 
     if(thn1 != thn2) {
-      return `${this.locale('id').format('DD MMMM YYYY')} - ${date.locale('id').format('DD MMMM YYYY')}`
+      return `${this.format('DD MMMM YYYY')} - ${date.format('DD MMMM YYYY')}`
     }
     else if(bln1 != bln2) {
-      return `${this.locale('id').format('DD MMMM')} - ${date.locale('id').format('DD MMMM')} ${thn1}`
+      return `${this.format('DD MMMM')} - ${date.format('DD MMMM')} ${thn1}`
     }
     else {
       return `${this.format('DD')} - ${date.format('DD')} ${this.format('MMMM YYYY')}`

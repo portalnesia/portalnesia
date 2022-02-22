@@ -1,6 +1,23 @@
 # Dayjs Plugins
 
-This is custom dayjs plugins for Portalnesia.
+Custom dayjs plugins for Portalnesia.
+
+## Quick start
+
+First, install the build from npm or yarn
+
+```bash 
+npm install --save @portalnesia/dayjs-plugins
+```
+
+Import and extends your dayjs
+
+```js
+import dayjs from 'dayjs'
+import plugins from '@portalnesia/dayjs-plugins'
+
+dayjs.extend(plugins);
+```
 
 ## API
 
@@ -10,7 +27,9 @@ Get time_ago format of date and returns object of time_ago format and unix times
 
 ```ts
 {
+  /* Time ago string */
   time_ago: string
+  /* Unix timestamp (in second) */
   timestamp: number
 }
 ```
@@ -27,7 +46,7 @@ console.log(time_ago);
 
 /**
  * {
- *    format: 'Dec 20',
+ *    format: '3 weeks ago',
  *    timestamp: 1639933200 
  * }
  * /
@@ -39,9 +58,9 @@ Get custom format
 
 Format type:
 
-- minimal (*default*) &mdash; Jan 01, 2022
-- fulldate &mdash; January 01, 2022
-- full &mdash; January 01, 2022, 10:30
+- minimal (*default*) &mdash; 01 Jan 2022
+- fulldate &mdash; 01 January 2022
+- full &mdash; 01 January 2022, 10:30
 - time  &mdash; 10:30
 
 Example
@@ -53,16 +72,13 @@ const format = date.pn_format('fulldate');
 console.log(format);
 
 /**
- * February 20, 2022
+ * 20 February 2022
  * /
 ```
 
 ### range_format
 
 Get range format from current date and argument's date
-(Indonesia Locale)
-
-> This function requires id locale `dayjs/locale/id`
 
 Example
 
@@ -79,8 +95,8 @@ const range3 = c.range_format(d);
 console.log(range)
 
 /**
- * 20 - 27 Februari 2022
- * 15 Januari - 27 Februari 2022
- * 18 Desember 2021 - 27 Februari 2022
+ * 20 - 27 February 2022
+ * 15 January - 27 February 2022
+ * 18 December 2021 - 27 February 2022
  * /
 ```
