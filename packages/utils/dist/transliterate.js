@@ -9,7 +9,7 @@ const slugifyReplacement_1 = __importDefault(require("./slugifyReplacement"));
 const doCustomReplacements = (string, replacements) => {
     for (const [key, value] of replacements) {
         // TODO: Use `String#replaceAll()` when targeting Node.js 16.
-        string = string.replace(new RegExp(escape_string_regexp_1.default(key), 'g'), value);
+        string = string.replace(new RegExp((0, escape_string_regexp_1.default)(key), 'g'), value);
     }
     return string;
 };
@@ -24,7 +24,7 @@ function transliterate(string, options) {
     ];
     string = string.normalize();
     string = doCustomReplacements(string, customReplacements);
-    string = lodash_deburr_1.default(string);
+    string = (0, lodash_deburr_1.default)(string);
     return string;
 }
 exports.default = transliterate;

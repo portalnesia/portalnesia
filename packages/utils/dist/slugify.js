@@ -20,7 +20,7 @@ const decamelize = (string) => {
         .replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1 $2');
 };
 const removeMootSeparators = (string, separator) => {
-    const escapedSeparator = escape_string_regexp_1.default(separator);
+    const escapedSeparator = (0, escape_string_regexp_1.default)(separator);
     return string
         .replace(new RegExp(`${escapedSeparator}{2,}`, 'g'), separator)
         .replace(new RegExp(`^${escapedSeparator}|${escapedSeparator}$`, 'g'), '');
@@ -36,7 +36,7 @@ function slugify(string, options) {
         ...builtinOverridableReplacements,
         ...options.customReplacements
     ];
-    string = transliterate_1.default(string, { customReplacements });
+    string = (0, transliterate_1.default)(string, { customReplacements });
     if (options.decamelize) {
         string = decamelize(string);
     }

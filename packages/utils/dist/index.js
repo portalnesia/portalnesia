@@ -18,8 +18,8 @@ const transliterate_1 = __importDefault(require("./transliterate"));
 const uuid_1 = require("uuid");
 /**
  * Clean text format
- * @param text: text to clean
- * @returns string
+ * @param {string} text: text to clean
+ * @returns {string} string
  */
 const clean = (text) => {
     if (typeof text !== 'string')
@@ -30,8 +30,8 @@ const clean = (text) => {
 exports.clean = clean;
 /**
  * Check is object empty?
- * @param obj objeck to check
- * @returns boolean
+ * @param {object} obj object to check
+ * @returns {boolean} boolean
  */
 const isEmptyObj = (obj) => {
     for (let key in obj) {
@@ -47,8 +47,8 @@ exports.monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
 exports.monthNamesEn = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 /**
  * Escape HTML string (& to &amp;)
- * @param text HTML to escape
- * @param withQuote if true, quote or double quote not escaped
+ * @param {string} text HTML to escape
+ * @param {boolean} withQuote if true, quote or double quote not escaped
  * @returns escaped string
  */
 const escapeHTML = (text, withQuote) => {
@@ -85,8 +85,8 @@ const stripHTML = (text = '') => {
 exports.stripHTML = stripHTML;
 /**
  * Convert special characters to HTML entities
- * @param text String being converted
- * @returns string
+ * @param {string} text String being converted
+ * @returns {string} string
  */
 const specialHTML = (text) => {
     if (typeof text !== 'string' || text.match(/\S/) === null)
@@ -112,9 +112,8 @@ const parseURL = (url) => {
 exports.parseURL = parseURL;
 /**
  * Uppercase the first character of each word in a string
- * @param text Input string
- * @param func if set, invoke function after text being converted
- * @returns string|void
+ * @param {string} text Input string
+ * @returns {string} string
  */
 const ucwords = function (text) {
     if (typeof text !== 'string')
@@ -127,9 +126,8 @@ const ucwords = function (text) {
 exports.ucwords = ucwords;
 /**
  * convertTextToJsStyles
- * @param text
- * @param func if set, invoke function after text being converted
- * @returns string|void
+ * @param {string} text
+ * @returns {string} string
  */
 const jsStyles = function (text) {
     if (typeof text !== 'string')
@@ -153,10 +151,9 @@ const jsStyles = function (text) {
 exports.jsStyles = jsStyles;
 /**
  * Get first characters of each word
- * @param text
- * @param number max word
- * @param func
- * @returns
+ * @param {string} text
+ * @param {number} number max word
+ * @returns {string} string
  */
 const firstLetter = function (text, number) {
     if (typeof text !== 'string')
@@ -172,8 +169,8 @@ const firstLetter = function (text, number) {
 exports.firstLetter = firstLetter;
 /**
  * Convert URL to only domain
- * @param url
- * @returns
+ * @param {string} url
+ * @returns {string} string
  */
 const urlToDomain = function (url) {
     let parser = new URL((url.match(/http(s)?/) ? url : `http://${url}`));
@@ -187,14 +184,15 @@ const replaceAt = function (text, index, replacement) {
 exports.replaceAt = replaceAt;
 /**
  * Truncate string
- * @param text string being truncated
- * @param num maximum character
- * @returns string
+ * @param {string} text string being truncated
+ * @param {number} num maximum character
+ * @param {string} limit Limit characters
+ * @returns {string} string
  */
-const truncate = function (text, num) {
+const truncate = function (text, num, limit = '...') {
     if (typeof text !== 'string')
         return '';
-    return (text.length <= num) ? text : text.slice(0, num) + '...';
+    return (text.length <= num) ? text : text.slice(0, num) + limit;
 };
 exports.truncate = truncate;
 const splice = function (text, idx, rem, str) {
@@ -205,14 +203,14 @@ const splice = function (text, idx, rem, str) {
 exports.splice = splice;
 /**
  * Convert string to slug-url-format
- * @param text
- * @param func
- * @param lowercase
- * @returns
+ * @param {string} text
+ * @param {?boolean} lowercase
+ * @param {?Options} option
+ * @returns {string} Slugify format
  */
 const slugFormat = function (text, lowercase, option) {
     const opt = Object.assign({ lowercase: lowercase || true }, option);
-    return slugify_1.default(text, opt);
+    return (0, slugify_1.default)(text, opt);
 };
 exports.slugFormat = slugFormat;
 function copyTextBrowser(text) {
@@ -262,9 +260,9 @@ const toBlob = (b64Data, contentType, sliceSize = 512) => {
 exports.toBlob = toBlob;
 /**
  * Convert byte to kilobyte, megabyte, ...
- * @param bytes
- * @param precision
- * @returns
+ * @param {number|null} bytes
+ * @param {number} precision
+ * @returns {string} string
  */
 const number_size = (bytes, precision = 2) => {
     if (typeof bytes !== 'number' || bytes === 0 || bytes === null)
@@ -284,8 +282,8 @@ const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const SMALL_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
 /**
  * Generate random string
- * @param number maximum string being generated
- * @returns
+ * @param {number} number maximum string being generated
+ * @returns {string} string
  */
 const generateRandom = (number = 10, lowercase_only = false) => {
     let result = '';
@@ -305,8 +303,8 @@ const numberFormat = (angka, separate = ".") => {
 exports.numberFormat = numberFormat;
 /**
  * Convert second to "time ago" format
- * @param seconds
- * @returns
+ * @param {number} seconds
+ * @returns {string} string
  */
 const time_ago = (seconds) => {
     let interval = Math.floor(seconds / 31536000);
@@ -447,7 +445,7 @@ function validateEmail(email) {
 }
 exports.validateEmail = validateEmail;
 function transliterate(string, options) {
-    return transliterate_1.default(string, options);
+    return (0, transliterate_1.default)(string, options);
 }
 exports.transliterate = transliterate;
 function stripslashes(string) {
@@ -455,9 +453,9 @@ function stripslashes(string) {
 }
 exports.stripslashes = stripslashes;
 function uuid(text) {
-    let uid = uuid_1.v4();
+    let uid = (0, uuid_1.v4)();
     if (text) {
-        uid = uuid_1.v5(text.toLowerCase(), uid);
+        uid = (0, uuid_1.v5)(text.toLowerCase(), uid);
     }
     return uid;
 }

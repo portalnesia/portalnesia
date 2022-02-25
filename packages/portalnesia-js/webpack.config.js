@@ -18,7 +18,9 @@ module.exports = {
 	output: {
 		library: '[name]',
 		path: path.resolve( __dirname, 'dist','umd'),
-		filename: '[name].min.js',
+		filename: function(pathData){
+			return pathData.chunk.name.toLowerCase() + '.min.js';
+		},
 		libraryTarget: 'umd',
 		libraryExport: 'default',
 		clean:true

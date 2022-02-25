@@ -9,8 +9,8 @@ export type Without<T,K> = {
 }
 /**
  * Clean text format
- * @param text: text to clean
- * @returns string
+ * @param {string} text: text to clean
+ * @returns {string} string
  */
 export const clean=(text: string): string=>{
     if(typeof text!=='string') return '';
@@ -20,8 +20,8 @@ export const clean=(text: string): string=>{
 
 /**
  * Check is object empty?
- * @param obj objeck to check
- * @returns boolean
+ * @param {object} obj object to check
+ * @returns {boolean} boolean
  */
 export const isEmptyObj=(obj: object): boolean=>{
     for(let key in obj) {
@@ -38,8 +38,8 @@ export const monthNamesEn=["January", "February", "March", "April", "May", "June
 
 /**
  * Escape HTML string (& to &amp;)
- * @param text HTML to escape
- * @param withQuote if true, quote or double quote not escaped
+ * @param {string} text HTML to escape
+ * @param {boolean} withQuote if true, quote or double quote not escaped
  * @returns escaped string
  */
 export const escapeHTML=(text: string,withQuote: boolean): string=>{
@@ -73,8 +73,8 @@ export const stripHTML=(text='')=>{
 
 /**
  * Convert special characters to HTML entities
- * @param text String being converted
- * @returns string
+ * @param {string} text String being converted
+ * @returns {string} string
  */
 export const specialHTML=(text: string): string=>{
     if(typeof text!=='string' || text.match(/\S/) === null) return '';
@@ -98,9 +98,8 @@ export const parseURL=(url: string): string=>{
 
 /**
  * Uppercase the first character of each word in a string
- * @param text Input string
- * @param func if set, invoke function after text being converted
- * @returns string|void
+ * @param {string} text Input string
+ * @returns {string} string
  */
 export const ucwords=function(text: string){
     if(typeof text!=='string') return '';
@@ -112,9 +111,8 @@ export const ucwords=function(text: string){
 
 /**
  * convertTextToJsStyles
- * @param text 
- * @param func if set, invoke function after text being converted
- * @returns string|void
+ * @param {string} text
+ * @returns {string} string
  */
 export const jsStyles=function(text: string){
     if(typeof text!=='string') return '';
@@ -137,10 +135,9 @@ export const jsStyles=function(text: string){
 
 /**
  * Get first characters of each word
- * @param text 
- * @param number max word
- * @param func 
- * @returns 
+ * @param {string} text 
+ * @param {number} number max word
+ * @returns {string} string
  */
 export const firstLetter=function(text: string,number?: number){
     if(typeof text!=='string') return '';
@@ -153,8 +150,8 @@ export const firstLetter=function(text: string,number?: number){
 
 /**
  * Convert URL to only domain
- * @param url 
- * @returns 
+ * @param {string} url
+ * @returns {string} string
  */
 export const urlToDomain=function(url: string): string{
     let parser=new URL((url.match(/http(s)?/)?url:`http://${url}`));
@@ -169,13 +166,14 @@ export const replaceAt=function(text: string,index: number, replacement: string)
 
 /**
  * Truncate string
- * @param text string being truncated
- * @param num maximum character
- * @returns string
+ * @param {string} text string being truncated
+ * @param {number} num maximum character
+ * @param {string} limit Limit characters
+ * @returns {string} string
  */
-export const truncate=function(text: string,num: number): string {
+export const truncate=function(text: string,num: number,limit: string='...'): string {
     if(typeof text!=='string') return '';
-    return (text.length <= num)?text:text.slice(0, num) + '...';
+    return (text.length <= num)?text:text.slice(0, num) + limit;
 };
   
 export const splice = function(text: string,idx: number, rem: number, str: string): string {
@@ -185,10 +183,10 @@ export const splice = function(text: string,idx: number, rem: number, str: strin
 
 /**
  * Convert string to slug-url-format
- * @param text 
- * @param func 
- * @param lowercase 
- * @returns 
+ * @param {string} text 
+ * @param {?boolean} lowercase
+ * @param {?Options} option 
+ * @returns {string} Slugify format
  */
 export const slugFormat = function (text: string,lowercase?: boolean,option?: Partial<Without<Options,'lowercase'>>): string {
     const opt: Options = {
@@ -242,9 +240,9 @@ export const toBlob=(b64Data: string, contentType: string, sliceSize=512): Blob=
 
 /**
  * Convert byte to kilobyte, megabyte, ...
- * @param bytes 
- * @param precision 
- * @returns 
+ * @param {number|null} bytes 
+ * @param {number} precision 
+ * @returns {string} string
  */
 export const number_size=(bytes: number|null|undefined,precision=2): string=>{
     if(typeof bytes !== 'number' || bytes===0 || bytes===null) return '-';
@@ -264,10 +262,10 @@ const SMALL_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
 
 /**
  * Generate random string
- * @param number maximum string being generated
- * @returns 
+ * @param {number} number maximum string being generated
+ * @returns {string} string
  */
-export const generateRandom=(number=10,lowercase_only=false)=>{
+export const generateRandom=(number=10,lowercase_only=false): string =>{
     let result='';
     const charLength = CHARS.length;
     for (let i = 0; i < number; i++) {
@@ -283,8 +281,8 @@ export const numberFormat = (angka: string,separate="."): string=>{
 
 /**
  * Convert second to "time ago" format
- * @param seconds 
- * @returns 
+ * @param {number} seconds 
+ * @returns {string} string
  */
 export const time_ago=(seconds: number): string=>{
     let interval = Math.floor(seconds / 31536000);

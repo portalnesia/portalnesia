@@ -1,0 +1,29 @@
+{
+  "name": "@portalnesia/kalendar-bali",
+  "version": "1.0.0",
+  "description": "Balinesse Calendar",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/portalnesia/portalnesia.git"
+  },
+  "keywords": [
+    "bali",
+    "calendar",
+    "saka",
+    "balinesse",
+    "kalendar"
+  ],
+  "author": "Putu Aditya <aditya@portalnesia.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/portalnesia/portalnesia/issues"
+  },
+  "homepage": "https://github.com/portalnesia/portalnesia#readme",
+  "dependencies": {
+    "dayjs": "^1.10.7"
+  }
+}

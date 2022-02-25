@@ -7,98 +7,96 @@ export declare type Without<T, K> = {
 };
 /**
  * Clean text format
- * @param text: text to clean
- * @returns string
+ * @param {string} text: text to clean
+ * @returns {string} string
  */
 export declare const clean: (text: string) => string;
 /**
  * Check is object empty?
- * @param obj objeck to check
- * @returns boolean
+ * @param {object} obj object to check
+ * @returns {boolean} boolean
  */
 export declare const isEmptyObj: (obj: object) => boolean;
 export declare const monthNames: string[];
 export declare const monthNamesEn: string[];
 /**
  * Escape HTML string (& to &amp;)
- * @param text HTML to escape
- * @param withQuote if true, quote or double quote not escaped
+ * @param {string} text HTML to escape
+ * @param {boolean} withQuote if true, quote or double quote not escaped
  * @returns escaped string
  */
 export declare const escapeHTML: (text: string, withQuote: boolean) => string;
 export declare const stripHTML: (text?: string) => string;
 /**
  * Convert special characters to HTML entities
- * @param text String being converted
- * @returns string
+ * @param {string} text String being converted
+ * @returns {string} string
  */
 export declare const specialHTML: (text: string) => string;
 export declare const parseURL: (url: string) => string;
 /**
  * Uppercase the first character of each word in a string
- * @param text Input string
- * @param func if set, invoke function after text being converted
- * @returns string|void
+ * @param {string} text Input string
+ * @returns {string} string
  */
 export declare const ucwords: (text: string) => string;
 /**
  * convertTextToJsStyles
- * @param text
- * @param func if set, invoke function after text being converted
- * @returns string|void
+ * @param {string} text
+ * @returns {string} string
  */
 export declare const jsStyles: (text: string) => string;
 /**
  * Get first characters of each word
- * @param text
- * @param number max word
- * @param func
- * @returns
+ * @param {string} text
+ * @param {number} number max word
+ * @returns {string} string
  */
 export declare const firstLetter: (text: string, number?: number) => string;
 /**
  * Convert URL to only domain
- * @param url
- * @returns
+ * @param {string} url
+ * @returns {string} string
  */
 export declare const urlToDomain: (url: string) => string;
 export declare const replaceAt: (text: string, index: number, replacement: string) => string;
 /**
  * Truncate string
- * @param text string being truncated
- * @param num maximum character
- * @returns string
+ * @param {string} text string being truncated
+ * @param {number} num maximum character
+ * @param {string} limit Limit characters
+ * @returns {string} string
  */
-export declare const truncate: (text: string, num: number) => string;
+export declare const truncate: (text: string, num: number, limit?: string) => string;
 export declare const splice: (text: string, idx: number, rem: number, str: string) => string;
 /**
  * Convert string to slug-url-format
- * @param text
- * @param func
- * @param lowercase
- * @returns
+ * @param {string} text
+ * @param {?boolean} lowercase
+ * @param {?Options} option
+ * @returns {string} Slugify format
  */
 export declare const slugFormat: (text: string, lowercase?: boolean, option?: Partial<Without<Options, 'lowercase'>>) => string;
 export declare function copyTextBrowser(text: string): Promise<void>;
 export declare const toBlob: (b64Data: string, contentType: string, sliceSize?: number) => Blob;
 /**
  * Convert byte to kilobyte, megabyte, ...
- * @param bytes
- * @param precision
- * @returns
+ * @param {number|null} bytes
+ * @param {number} precision
+ * @returns {string} string
  */
 export declare const number_size: (bytes: number | null | undefined, precision?: number) => string;
 /**
  * Generate random string
- * @param number maximum string being generated
- * @returns
+ * @param {number} number maximum string being generated
+ * @returns {string} string
  */
 export declare const generateRandom: (number?: number, lowercase_only?: boolean) => string;
 export declare const numberFormat: (angka: string, separate?: string) => string;
 /**
  * Convert second to "time ago" format
- * @param seconds
- * @returns
+ * @param {number} seconds
+ * @returns {string} string
  */
 export declare const time_ago: (seconds: number) => string;
 export declare const insertElementAfter: (newNode: HTMLElement, referenceNode: HTMLElement) => void;
