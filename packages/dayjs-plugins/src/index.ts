@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime);
 
-export type IPNFormat = 'minimal'|'fulldate'|'full'|'time'
+export type IPNFormat = 'minimal'|'fulldate'|'full'|'time'|'db'
 export type UnknownDate = string | number | Date | dayjs.Dayjs
 
 declare module 'dayjs' {
@@ -30,6 +30,7 @@ declare module 'dayjs' {
      *  - fulldate: 01 January 2022
      *  - full: 01 January 2022, 10:30
      *  - time: 10:30
+     *  - db: 2022-01-01 10:30:00
      */
     pn_format(type?:IPNFormat): string
 
@@ -66,7 +67,7 @@ const portalnesiaDayjs: dayjs.PluginFunc = (o,c,d)=>{
     }
   }
 
-  p.pn_format = function(type: IPNFormat='minimal') {
+  p.pn_format = function(type: IPNFormat='db') {
     let format: string;
     if(type == 'minimal') {
       format="DD MMM YYYY"
@@ -74,8 +75,10 @@ const portalnesiaDayjs: dayjs.PluginFunc = (o,c,d)=>{
       format = "DD MMMM YYYY"
     } else if(type == 'time') {
       format = "HH:mm";
-    } else {
+    } else if(type=='full') {
       format = "DD MMMM YYYY, HH:mm"
+    } else {
+      format = "YYYY-MM-DD HH:mm:ss"
     }
     return this.format(format);
   }
