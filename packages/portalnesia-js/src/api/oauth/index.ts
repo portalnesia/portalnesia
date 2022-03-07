@@ -3,8 +3,7 @@
  * Portalnesia OAuth API
  */
 import PortalnesiaError from "@src/exception/PortalnesiaException";
-import Portalnesia from "@src/server";
-import BaseApi from "../base";
+import BaseApi,{ACCOUNT_URL,Portalnesia} from "../base";
 import {ModuleOptions,AuthorizationCode,ClientCredentials,Token, AccessToken} from 'simple-oauth2'
 import pkceChallenge from 'pkce-challenge'
 import IdTokenVerifier from 'idtoken-verifier'
@@ -78,11 +77,11 @@ export default class OAuth extends BaseApi {
                 secret:portalnesia.options.client_secret||'',
             },
             auth:{
-                tokenHost:Portalnesia.ACCOUNT_URL,
+                tokenHost:ACCOUNT_URL,
                 tokenPath:'/oauth/token',
                 revokePath:'/oauth/revoke',
-                authorizeHost:Portalnesia.ACCOUNT_URL,
-                authorizePath:'/oauth/authorization'
+                authorizeHost:ACCOUNT_URL,
+                authorizePath:'/oauth/authorize'
             }
         }
         this.client_auth = new AuthorizationCode(config);
@@ -147,7 +146,7 @@ export default class OAuth extends BaseApi {
      */
     async getToken(options: TokenOptions): Promise<TokenResponse> {
         const {grant_type,code,scope:scopes,...rest} = options;
-        if(grant_type === 'client_credentials' && !this.pn.options.client_secret) throw new PortalnesiaError("Missing `client_secret`")
+        if(grant_type === 'client_credentials' && !this.pn.options.client_secret) throw new PortalnesiaError("Missing `client_secret`","OAuth2")
         const scope = scopes ? scopes.join(" ") : "";
 
         if(grant_type === 'authorization_code') {
@@ -156,7 +155,11 @@ export default class OAuth extends BaseApi {
                 this.pn.setToken(token);
                 return token.token;
             } catch(e: any) {
-                throw new PortalnesiaError(e?.message,"Token error")
+                if(e?.data?.isResponseError) {
+                    const payload = e?.data?.payload;
+                    payload.name="OAuth2";
+                    throw new PortalnesiaError(payload)
+                } else throw new PortalnesiaError(e?.message,"OAuth2")
             }
         } else {
             try {
@@ -164,7 +167,11 @@ export default class OAuth extends BaseApi {
                 this.pn.setToken(token);
                 return token.token;
             } catch(e: any) {
-                throw new PortalnesiaError(e?.message,"Token error")
+                if(e?.data?.isResponseError) {
+                    const payload = e?.data?.payload;
+                    payload.name="OAuth2";
+                    throw new PortalnesiaError(payload)
+                } else throw new PortalnesiaError(e?.message,"OAuth2")
             }
         }
     }
@@ -177,14 +184,23 @@ export default class OAuth extends BaseApi {
      * @throws {PortalnesiaError} Error {@link PortalnesiaError}
      */
     async refreshToken(): Promise<TokenResponse> {
-        if(!this.pn.token) throw new PortalnesiaError("Missing `token`")
-
+        if(!this.pn.token) throw new PortalnesiaError("Missing `token`","OAuth2")
+        
         try {
-            const token = await this.pn.token.refresh();
+            // @ts-ignore
+            const token = await this.pn.token.refresh({client_id:this.pn.options.client_id},{
+                headers:{
+                    "PN-Client-Id":this.pn.options.client_id
+                }
+            });
             this.pn.setToken(token);
             return token.token;
         } catch(e: any) {
-            throw new PortalnesiaError(e?.message,"Token error")
+            if(e?.data?.isResponseError) {
+                const payload = e?.data?.payload;
+                payload.name="OAuth2";
+                throw new PortalnesiaError(payload)
+            } else throw new PortalnesiaError(e?.message,"OAuth2")
         }
     }
 
@@ -194,14 +210,23 @@ export default class OAuth extends BaseApi {
      * Revokes either the access or refresh token or both
      * @param {TokenType} type {@link TokenType | Token Type}
      * @returns {Promise<void>} void
-     * @throws {PortalnesiaError} Error {@link PortalnesiaError}
      */
     async revokeToken(type?: TokenType): Promise<void> {
-        if(!this.pn.token) throw new PortalnesiaError("Missing `token`");
+        if(!this.pn.token) throw new PortalnesiaError("Missing `token`","OAuth2");
 
         try {
-            if(type) await this.pn.token.revoke(type)
-            else await this.pn.token.revokeAll();
+            // @ts-ignore
+            if(type) await this.pn.token.revoke(type,{
+                headers:{
+                    "PN-Client-Id":this.pn.options.client_id
+                }
+            })
+            // @ts-ignore
+            else await this.pn.token.revokeAll({
+                headers:{
+                    "PN-Client-Id":this.pn.options.client_id
+                }
+            });
             return;
         } catch(e) {
             return;

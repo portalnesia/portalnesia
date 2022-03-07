@@ -10,15 +10,19 @@
     "./blog": "./dist/api/blog/index.js"
   },
   "typesVersions": {
-    "*":{
-      "server":["./dist/server.d.ts"],
-      "blog":["./dist/api/blog/index.js"]
+    "*": {
+      "server": [
+        "./dist/server.d.ts"
+      ],
+      "blog": [
+        "./dist/api/blog/index.js"
+      ]
     }
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "npx rimraf ./dist",
-    "build": "npx ttsc",
+    "build": "npx genversion version.js && npx ttsc",
     "bundle": "npx webpack"
   },
   "repository": {
@@ -42,19 +46,27 @@
   "dependencies": {
     "axios": "^0.25.0",
     "idtoken-verifier": "^2.2.2",
+    "node-fetch": "^2.6.7",
     "pkce-challenge": "^2.2.0",
     "qs": "^6.10.3",
     "simple-oauth2": "^4.3.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.13",
+    "@types/node-fetch": "^2.6.1",
     "@types/qs": "^6.9.7",
     "@types/simple-oauth2": "^4.1.1",
     "assert": "^2.0.0",
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
+    "create-require": "^1.1.1",
     "crypto-browserify": "^3.12.0",
+    "genversion": "^3.0.2",
     "https-browserify": "^1.0.0",
+    "native-url": "^0.3.4",
+    "patch-package": "^6.4.7",
+    "path-browserify": "^1.0.1",
+    "pkg-dir": "^6.0.1",
     "process": "^0.11.10",
     "querystring-es3": "^0.2.1",
     "rimraf": "^3.0.2",

@@ -11,6 +11,7 @@ const bannerPlugin = require('./extra/banner');
 module.exports = {
 	performance: { hints: false },
 	mode:'production',
+	devtool: 'source-map',
 	entry: {
 		Portalnesia: path.resolve( __dirname, 'src', 'index.ts' ),
 		PNBlog: path.resolve( __dirname, 'src', 'api/blog/index.ts' )
@@ -19,7 +20,7 @@ module.exports = {
 		library: '[name]',
 		path: path.resolve( __dirname, 'dist','umd'),
 		filename: function(pathData){
-			return pathData.chunk.name.toLowerCase() + '.min.js';
+			return pathData.chunk.name.replace(/^PN/i,'pn-').toLowerCase() + '.min.js';
 		},
 		libraryTarget: 'umd',
 		libraryExport: 'default',
@@ -58,12 +59,19 @@ module.exports = {
 			process: 'process/browser',
 		}),
 	],
+	externals:{
+		'node-fetch':'fetch',
+		'fetch': 'fetch',
+		//'url':"URL"
+	},
 	resolve: {
     extensions: [".ts", ".js"],
 		plugins: [new TsconfigPathsPlugin()],
+		alias:{
+			url:path.resolve(__dirname,'extra/url')
+		},
 		fallback:{
 			"stream": require.resolve("stream-browserify"),
-			"url": false,
 			"http": require.resolve("stream-http"),
 			"zlib": false,
 			"https": require.resolve("https-browserify"),
@@ -71,7 +79,8 @@ module.exports = {
 			"querystring": require.resolve("querystring-es3"),
 			"buffer": require.resolve("buffer"),
 			"assert": require.resolve("assert"),
-			"util": require.resolve("util")
+			"util": require.resolve("util"),
+			"path": require.resolve('path-browserify')
 		}
   },
 	module: {
