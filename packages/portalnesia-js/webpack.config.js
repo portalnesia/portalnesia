@@ -5,22 +5,23 @@
 const path = require( 'path' );
 const webpack = require( 'webpack' );
 const TerserWebpackPlugin = require( 'terser-webpack-plugin' );
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const bannerPlugin = require('./extra/banner');
+const nodeExternals = require('webpack-node-externals')
 
 module.exports = {
 	performance: { hints: false },
 	mode:'production',
 	devtool: 'source-map',
+	target:'node',
 	entry: {
 		Portalnesia: path.resolve( __dirname, 'src', 'index.ts' ),
-		PNBlog: path.resolve( __dirname, 'src', 'api/blog/index.ts' )
+		PNBlog: path.resolve( __dirname, 'src', 'api/blog/index.ts')
 	},
 	output: {
-		library: '[name]',
-		path: path.resolve( __dirname, 'dist','umd'),
+		path: path.resolve( __dirname, 'dist'),
 		filename: function(pathData){
-			return pathData.chunk.name.replace(/^PN/i,'pn-').toLowerCase() + '.min.js';
+			if(pathData.chunk.name === 'Portalnesia') return 'index.js';
+			return pathData.chunk.name.replace(/^PN/i,'').toLowerCase() + '.js';
 		},
 		libraryTarget: 'umd',
 		libraryExport: 'default',
@@ -35,52 +36,23 @@ module.exports = {
 						comments: /^!/
 					}
 				},
-				extractComments: false
+				extractComments: true
 			} )
-		],
-		/*splitChunks: {
-			cacheGroups:{
-				portalnesia: {
-					test:/[\\/](node_modules|(src\/index)|(src\/api\/base)|(src\/api\/oauth)|(src\/exception))[\\/]/,
-					name: 'portalnesia',
-					chunks:'all'
-				}
-			}
-		}*/
+		]
 	},
 
 	plugins: [
 		new webpack.BannerPlugin( {
 			banner: bannerPlugin(),
 			raw: true
-		}),
-		new webpack.ProvidePlugin({
-			Buffer: ['buffer', 'Buffer'],
-			process: 'process/browser',
-		}),
+		})
 	],
-	externals:{
-		'node-fetch':'fetch',
-		'fetch': 'fetch',
-		//'url':"URL"
-	},
+	//externalsPresets:{node:true},
+	externals:[nodeExternals({allowlist:['simple-oauth2']})],
 	resolve: {
     extensions: [".ts", ".js"],
-		plugins: [new TsconfigPathsPlugin()],
 		alias:{
 			url:path.resolve(__dirname,'extra/url')
-		},
-		fallback:{
-			"stream": require.resolve("stream-browserify"),
-			"http": require.resolve("stream-http"),
-			"zlib": false,
-			"https": require.resolve("https-browserify"),
-			"crypto": require.resolve("crypto-browserify"),
-			"querystring": require.resolve("querystring-es3"),
-			"buffer": require.resolve("buffer"),
-			"assert": require.resolve("assert"),
-			"util": require.resolve("util"),
-			"path": require.resolve('path-browserify')
 		}
   },
 	module: {

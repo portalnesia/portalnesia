@@ -1,54 +1,60 @@
-import {AccessToken} from 'simple-oauth2'
-import PortalnesiaError from "@src/exception/PortalnesiaException";
-import '@api/base/fetch-polyfill'
-// @ts-ignore
-import version from '../../../version';
+import EventEmitter from 'events'
+import Token from '../oauth/Token'
+import PortalnesiaError from "../exception/PortalnesiaException";
 import qs from 'qs'
+import {version} from '../version';
+import OAuth from '../oauth';
+import fetch from 'isomorphic-unfetch'
+import { IScopes } from '../oauth/types';
 
 export interface PortalnesiaOptions {
-    client_id: string;
-    client_secret?: string;
-    version?: number;
-    redirect_uri?: string,
+  client_id: string;
+  client_secret?: string;
+  version?: number;
+  redirect_uri?: string,
+  request?:{
+    headers?: Record<string,string>
+  },
+  scope: IScopes[]
 }
 
 export type ISeen = {
-    number: number,
-    format: string
+  number: number,
+  format: string
 }
 
 export type IDate = {
-    format:string,
-    timestamp: number
+  format:string,
+  timestamp: number
 } | null
 
 export type ApiErrorTypes = {
-    name: string,
-    code: number,
-    description: string
+  name: string,
+  code: number,
+  description: string
 }
 
 export interface ResponseData<R> {
-    error: ApiErrorTypes,
-    data: R;
-    message: string;
+  error: ApiErrorTypes,
+  data: R;
+  message: string;
 }
 
 export type ResponsePagination<D> = {
-    page: number,
-    total_page: number,
-    can_load:boolean,
-    total: number,
-    data: D[]
+  page: number,
+  total_page: number,
+  can_load:boolean,
+  total: number,
+  data: D[]
 }
 
-export class Portalnesia {
+export default class Portalnesia extends EventEmitter {
   /**
    * Token
    * @property {@link AccessToken}
    * @protected
    */
-  protected tokens?: AccessToken
+  protected tokens?: Token
   
   /**
   * API Version
@@ -64,12 +70,16 @@ export class Portalnesia {
   */
   readonly options: PortalnesiaOptions
 
+  oauth: OAuth
+
   static API_URL = "https://api.portalnesia.com";
   static ACCOUNT_URL = "https://accounts.portalnesia.com"
 
   constructor(options: PortalnesiaOptions) {
+    super();
     this.options = options;
     this.version = `v${options.version||1}`;
+    this.oauth = new OAuth(this);
   }
 
   /**
@@ -94,9 +104,9 @@ export class Portalnesia {
   /**
   * Internal function. If you want to set token, go to {@link OAuth.setToken | OAuth} instead
   * @internal
-  * @param {AccessToken} token 
+  * @param {Token} token 
   */
-   setToken(token: AccessToken) {
+   setToken(token: Token) {
      this.tokens = token;
    }
 
@@ -110,10 +120,10 @@ export class Portalnesia {
   * @param {AxiosRequestConfig} axiosOptions optional axios options
   * @returns {Promise<D>} Promise of D
   */
-   request<D=any,B=any>(method: 'post'|'get'|'delete'|'put',url: string,body?:B,headers?: HeadersInit): Promise<D> {
-    this.validateToken();
+  async request<D=any,B=any>(method: 'post'|'get'|'delete'|'put',url: string,body?:B,headers?: HeadersInit,force?:boolean): Promise<D> {
+    await this.validateToken(force);
     if(typeof this[method] !== 'function') throw new Error();
-    return this[method]<D>(url,body,headers);
+    return await this[method]<D>(`${Portalnesia.API_URL}/${this.version}${url}`,body,headers);
   }
  
   /**
@@ -125,8 +135,8 @@ export class Portalnesia {
   */
   async upload<D=any>(url: string,body?:FormData,headers?: HeadersInit): Promise<D> {
     try {
-      this.validateToken();
-      const response = await fetch(url,{
+      await this.validateToken();
+      const response = await fetch(`${Portalnesia.API_URL}/${this.version}${url}`,{
         method:"POST",
         body,
         headers:this.getFetchOpts(true,headers),
@@ -143,8 +153,14 @@ export class Portalnesia {
     }
   }
  
-  private validateToken() {
-    if(!this.tokens || this.tokens.expired()) throw new PortalnesiaError("Missing token");
+  private async validateToken(force?:boolean) {
+    if(!this.tokens) {
+      if(!force) throw new PortalnesiaError("Missing token");
+    } else {
+      if(this.tokens.isExpired()) {
+        await this.oauth.refreshToken();
+      }
+    }
   }
 
   private catchError(e: any) {
@@ -157,9 +173,10 @@ export class Portalnesia {
   }
  
   private getFetchOpts(withUpload?:boolean,options?: HeadersInit) {
-    if(!this.tokens || this.tokens.expired()) throw new PortalnesiaError("Missing token");
+    if(!this.tokens || this.tokens.isExpired()) throw new PortalnesiaError("Missing token");
     const token = this.tokens
     const config: HeadersInit = {
+      ...(this.options.request?.headers ? {...this.options.request.headers} : {}),
       ...options,
       ...(withUpload ? {
           'Content-Type':'multipart/form-data'
@@ -249,51 +266,3 @@ export class Portalnesia {
     }
   }
 }
-
-export default class BaseApi {
-  /**
-   * Portalnesia Instance
-   * @property {@link Portalnesia | Portalnesia Instance}
-   */
-  pn: Portalnesia
-
-  /**
-   * 
-   * @param {Portalnesia} portalnesia {@link Portalnesia | Portalnesia Instance} 
-   */
-  constructor(portalnesia: Portalnesia) {
-    this.pn = portalnesia
-  }
-
-  protected getFullUrl(path?: string,type:'api'|'accounts'='api') {
-    return this.pn.getFullUrl(path,type)
-  }
-
-  /**
-   * Send request to Portalnesia
-   * @template D Response Data for type D
-   * @template B Body request
-   * @param {string} method HTTP method
-   * @param {string} url Portalnesia API URL
-   * @param {B} body body/url params
-   * @param {HeadersInit} headers optional headers options
-   * @returns {Promise<D>} Promise of D
-   */
-  protected request<D=any,B=any>(method: 'post'|'get'|'delete'|'put',url: string,body?:B,headers?: HeadersInit): Promise<D> {
-    return this.pn.request(method,url,body,headers);
-  }
-
-  /**
-   * 
-   * @template D Response Data for type D
-   * @param {string} url Portalnesia API URL
-   * @param {FormData} body body/url params
-   * @param {HeadersInit} headers optional headers options
-   */
-  protected async upload<D=any>(url: string,body?:FormData,headers?: HeadersInit): Promise<D> {
-    return this.pn.upload(url,body,headers)
-  }
-}
-
-export const API_URL = "https://api.portalnesia.com";
-export const ACCOUNT_URL = "https://accounts.portalnesia.com"

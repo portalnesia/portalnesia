@@ -1,4 +1,4 @@
-import { ResponseData } from "@src/server";
+import { ResponseData } from "../base";
 
 export default class PortalnesiaError extends Error {
     code?: number|string;
