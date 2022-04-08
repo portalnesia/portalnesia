@@ -3,9 +3,14 @@ import { TokenResponse } from "./types";
 export default class Token {
   private _token: TokenResponse & ({expiredAt: number})
 
-  static createToken(token: TokenResponse) {
-    const expiredAt = this.getExpirationDate(token.expires_in)
-    return new Token({...token,expiredAt});
+  static createToken(token: TokenResponse & ({expiredAt?: number})) {
+    if(typeof token.expiredAt === 'number') {
+      const new_token = token as TokenResponse & ({expiredAt: number})
+      return new Token(new_token);
+    } else {
+      const expiredAt = Token.getExpirationDate(token.expires_in)
+      return new Token({...token,expiredAt});
+    }
   }
 
   constructor(data:TokenResponse & ({expiredAt: number})) {

@@ -3,8 +3,10 @@ import { ResponseData } from "../base";
 export default class PortalnesiaError extends Error {
     code?: number|string;
     payload?: ResponseData<any>
-    constructor(dt?:string|ResponseData<any>,name?:string,code?:number|string) {
+    httpStatus?: number
+    constructor(dt?:string|ResponseData<any>,name?:string,code?:number|string,httpStatus?:number) {
         let msg="";
+        
         if(typeof dt === 'string') {
             super(dt)
         } else {
@@ -17,6 +19,7 @@ export default class PortalnesiaError extends Error {
             super(msg)
             this.payload = dt;
         }
+        this.httpStatus=httpStatus;
         this.name= name ? `[PortalnesiaError] ${name}` : typeof dt !== 'string' && dt?.error?.name ? `[PortalnesiaError] ${dt?.error?.name}` : typeof dt !== 'string' && typeof dt?.error == 'string' ? `[PortalnesiaError] ${dt?.error}` : "PortalnesiaError";
         this.code = code ? code : typeof dt !== 'string' && dt?.error?.code ? dt?.error?.code : undefined;
     }

@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from 'axios';
 import Portalnesia from './portalnesia'
 
 export default class BaseApi {
@@ -25,8 +26,8 @@ export default class BaseApi {
    * @param {HeadersInit} headers optional headers options
    * @returns {Promise<D>} Promise of D
    */
-  protected request<D=any,B=any>(method: 'post'|'get'|'delete'|'put',url: string,body?:B,headers?: HeadersInit): Promise<D> {
-    return this.pn.request(method,url,body,headers);
+  protected request<D=any,B=any>(method: 'post'|'get'|'delete'|'put',url: string,body?:B,axios?: AxiosRequestConfig): Promise<D> {
+    return this.pn.request(method,url,body,axios);
   }
 
   /**
@@ -36,8 +37,8 @@ export default class BaseApi {
    * @param {FormData} body body/url params
    * @param {HeadersInit} headers optional headers options
    */
-  protected async upload<D=any>(url: string,body?:FormData,headers?: HeadersInit): Promise<D> {
-    return this.pn.upload(url,body,headers)
+  protected async upload<D=any>(url: string,body?:FormData,axios?: AxiosRequestConfig): Promise<D> {
+    return this.pn.upload(url,body,axios)
   }
 }
 

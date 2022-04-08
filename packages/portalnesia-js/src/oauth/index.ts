@@ -7,10 +7,10 @@ import {BaseApi,Portalnesia} from "../base";
 //import {ModuleOptions,AuthorizationCode,ClientCredentials,Token, AccessToken} from 'simple-oauth2'
 import pkceChallenge from 'pkce-challenge'
 import IdTokenVerifier from 'idtoken-verifier'
-import type {TokenResponse,AuthorizationOptions,TokenOptions} from './types'
+import type {TokenResponse,AuthorizationOptions,TokenOptions, TokenErrorResponse} from './types'
 import qs from 'qs'
 import Token from './Token'
-import fetch from 'isomorphic-unfetch'
+import axios from 'axios'; 
 
 export {Token}
 export * from './types'
@@ -96,15 +96,13 @@ export default class OAuth extends BaseApi {
 
         if(grant_type === 'authorization_code') {
             try {
-                const response = await fetch(this.auth.tokenUrl,{
-                    method:"POST",
-                    body:qs.stringify({
-                        client_id:this.pn.options.client_id,
-                        grant_type,
-                        code,
-                        redirect_uri:this.pn.options.redirect_uri,
-                        code_verifier,
-                    }),
+                const response = await axios.post<TokenResponse|TokenErrorResponse>(this.auth.tokenUrl,qs.stringify({
+                    grant_type,
+                    client_id:this.pn.options.client_id,
+                    code,
+                    redirect_uri:this.pn.options.redirect_uri,
+                    code_verifier
+                }),{
                     headers:{
                         'Content-type':'application/x-www-form-urlencoded',
                         'PN-Client-Id':this.pn.options.client_id,
@@ -113,43 +111,41 @@ export default class OAuth extends BaseApi {
                         } : {})
                     }
                 })
-                const r = await response.json() as TokenResponse;
-                if(!response.ok) {
-                    throw new PortalnesiaError((r as any)?.error_description||"Something went wrong","OAuth2");
+                const r = response.data;
+                if('error' in r) {
+                    throw new PortalnesiaError((r as any)?.error_description||"Something went wrong","OAuth2",undefined,response.status)
                 }
                 const token = Token.createToken(r);
                 this.pn.setToken(token);
                 return token;
             } catch(e: any) {
-                if(e instanceof PortalnesiaError) throw e;
-                else throw new PortalnesiaError(e?.message,"OAuth2")
+                const err = this.pn.catchError(e);
+                throw err
             }
         } else {
             try {
-                const response = await fetch(this.auth.tokenUrl,{
-                    method:"POST",
-                    body:qs.stringify({
-                        grant_type,
-                        client_id:this.pn.options.client_id,
-                        code,
-                        redirect_uri:this.pn.options.redirect_uri
-                    }),
+                const response = await axios.post<TokenResponse|TokenErrorResponse>(this.auth.tokenUrl,qs.stringify({
+                    grant_type,
+                    client_id:this.pn.options.client_id,
+                    code,
+                    redirect_uri:this.pn.options.redirect_uri
+                }),{
                     headers:{
                         'Content-type':'application/x-www-form-urlencoded',
                         'PN-Client-Id':this.pn.options.client_id,
                         'Authorization':`Basic ${Buffer.from(`${this.pn.options.client_id}:${this.pn.options.client_secret}`).toString('base64')}`
                     }
                 })
-                const r = await response.json() as TokenResponse;
-                if(!response.ok) {
-                    throw new PortalnesiaError((r as any)?.error_description||"Something went wrong","OAuth2");
+                const r = response.data;
+                if('error' in r) {
+                    throw new PortalnesiaError((r as any)?.error_description||"Something went wrong","OAuth2",undefined,response.status)
                 }
                 const token = Token.createToken(r);
                 this.pn.setToken(token);
                 return token;
             } catch(e: any) {
-                if(e instanceof PortalnesiaError) throw e;
-                else throw new PortalnesiaError(e?.message,"OAuth2")
+                const err = this.pn.catchError(e);
+                throw err
             }
         }
     }
@@ -165,13 +161,11 @@ export default class OAuth extends BaseApi {
         if(!this.pn.token) throw new PortalnesiaError("Missing `token`","OAuth2")
         
         try {
-            const response = await fetch(this.auth.tokenUrl,{
-                method:"POST",
-                body:qs.stringify({
-                    client_id:this.pn.options.client_id,
-                    grant_type:'refresh_token',
-                    refresh_token:this.pn.token.token.refresh_token
-                }),
+            const response = await axios.post<TokenResponse|TokenErrorResponse>(this.auth.tokenUrl,qs.stringify({
+                client_id:this.pn.options.client_id,
+                grant_type:'refresh_token',
+                refresh_token:this.pn.token.token.refresh_token
+            }),{
                 headers:{
                     'Content-type':'application/x-www-form-urlencoded',
                     'PN-Client-Id':this.pn.options.client_id,
@@ -180,9 +174,9 @@ export default class OAuth extends BaseApi {
                     } : {})
                 }
             })
-            const r = await response.json() as TokenResponse;
-            if(!response.ok) {
-                throw new PortalnesiaError((r as any)?.error_description||"Something went wrong","OAuth2");
+            const r = response.data;
+            if('error' in r) {
+                throw new PortalnesiaError((r as any)?.error_description||"Something went wrong","OAuth2",undefined,response.status)
             }
             const token = Token.createToken(r);
             this.pn.setToken(token);
@@ -205,12 +199,10 @@ export default class OAuth extends BaseApi {
 
         try {
             await Promise.all([
-                fetch(this.auth.revokeUrl,{
-                    method:"POST",
-                    body:qs.stringify({
-                        token_type_hint:'access_token',
-                        token:this.pn.token.token.access_token
-                    }),
+                axios.post<TokenResponse|TokenErrorResponse>(this.auth.revokeUrl,qs.stringify({
+                    token_type_hint:'access_token',
+                    token:this.pn.token.token.access_token
+                }),{
                     headers:{
                         'Content-type':'application/x-www-form-urlencoded',
                         'PN-Client-Id':this.pn.options.client_id,
@@ -219,12 +211,10 @@ export default class OAuth extends BaseApi {
                         } : {})
                     }
                 }),
-                fetch(this.auth.revokeUrl,{
-                    method:"POST",
-                    body:qs.stringify({
-                        token_type_hint:'refresh_token',
-                        token:this.pn.token.token.refresh_token
-                    }),
+                axios.post<TokenResponse|TokenErrorResponse>(this.auth.revokeUrl,qs.stringify({
+                    token_type_hint:'refresh_token',
+                    token:this.pn.token.token.refresh_token
+                }),{
                     headers:{
                         'Content-type':'application/x-www-form-urlencoded',
                         'PN-Client-Id':this.pn.options.client_id,

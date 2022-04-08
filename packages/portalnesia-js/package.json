@@ -1,6 +1,6 @@
 {
   "name": "@portalnesia/portalnesia-js",
-  "version": "1.0.0",
+  "version": "0.0.1-alpha.0",
   "description": "Official javascript wrapper for the Portalnesia API",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -18,7 +18,7 @@
     "version": "npx genversion --es6 src/version.ts",
     "rollup": "npx rollup -c",
     "build": "npx tsc --module commonjs --target esnext --outDir dist",
-    "build:dev":"npx tsc --watch --module commonjs --target esnext --outDir dist"
+    "build:dev": "npx tsc --watch --module commonjs --target esnext --outDir dist"
   },
   "repository": {
     "type": "git",
@@ -39,9 +39,8 @@
   },
   "homepage": "https://portalnesia.com",
   "dependencies": {
-    "encoding": "^0.1.13",
+    "axios": "^0.26.1",
     "idtoken-verifier": "^2.2.2",
-    "isomorphic-unfetch": "^3.1.0",
     "pkce-challenge": "^2.2.0",
     "qs": "^6.10.3"
   },

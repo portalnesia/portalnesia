@@ -1,11 +1,10 @@
 import EventEmitter from 'events'
 import Token from '../oauth/Token'
 import PortalnesiaError from "../exception/PortalnesiaException";
-import qs from 'qs'
 import {version} from '../version';
 import OAuth from '../oauth';
-import fetch from 'isomorphic-unfetch'
 import { IScopes } from '../oauth/types';
+import axios,{AxiosRequestConfig,AxiosInstance, AxiosError} from 'axios'; 
 
 export interface PortalnesiaOptions {
   client_id: string;
@@ -15,7 +14,8 @@ export interface PortalnesiaOptions {
   request?:{
     headers?: Record<string,string>
   },
-  scope: IScopes[]
+  scope: IScopes[],
+  axios?: AxiosRequestConfig
 }
 
 export type ISeen = {
@@ -48,6 +48,11 @@ export type ResponsePagination<D> = {
   data: D[]
 }
 
+type IReequest = {
+  force?: boolean,
+  autoRefreshToken?: boolean
+}
+
 export default class Portalnesia extends EventEmitter {
   /**
    * Token
@@ -71,6 +76,7 @@ export default class Portalnesia extends EventEmitter {
   readonly options: PortalnesiaOptions
 
   oauth: OAuth
+  private axios: AxiosInstance;
 
   static API_URL = "https://api.portalnesia.com";
   static ACCOUNT_URL = "https://accounts.portalnesia.com"
@@ -80,6 +86,7 @@ export default class Portalnesia extends EventEmitter {
     this.options = options;
     this.version = `v${options.version||1}`;
     this.oauth = new OAuth(this);
+    this.axios = axios.create(options.axios);
   }
 
   /**
@@ -89,16 +96,6 @@ export default class Portalnesia extends EventEmitter {
   */
    get token() {
     return this.tokens;
-  }
- 
-  /**
-  * 
-  * @internal 
-  * @returns {string} string
-  */
-  getFullUrl(path?: string,type:'api'|'accounts'='api'): string {
-    if(type === 'accounts') return `${Portalnesia.ACCOUNT_URL}${path}`
-    return `${Portalnesia.API_URL}/${this.version}${path}`
   }
  
   /**
@@ -117,13 +114,13 @@ export default class Portalnesia extends EventEmitter {
   * @param {string} method HTTP method
   * @param {string} url Portalnesia API URL
   * @param {B} body body/url params
-  * @param {AxiosRequestConfig} axiosOptions optional axios options
+  * @param {AxiosRequestConfig} axios optional axios options
   * @returns {Promise<D>} Promise of D
   */
-  async request<D=any,B=any>(method: 'post'|'get'|'delete'|'put',url: string,body?:B,headers?: HeadersInit,force?:boolean): Promise<D> {
-    await this.validateToken(force);
+  async request<D=any,B=any>(method: 'post'|'get'|'delete'|'put',url: string,body?:B,axios?: AxiosRequestConfig,options?:IReequest): Promise<D> {
     if(typeof this[method] !== 'function') throw new Error();
-    return await this[method]<D>(`${Portalnesia.API_URL}/${this.version}${url}`,body,headers);
+    await this.validateToken(options?.force,options?.autoRefreshToken);
+    return await this[method]<D>(`${Portalnesia.API_URL}/${this.version}${url}`,body,axios);
   }
  
   /**
@@ -131,21 +128,16 @@ export default class Portalnesia extends EventEmitter {
   * @template D Response Data for type D
   * @param {string} url Portalnesia API URL
   * @param {FormData} body body/url params
-  * @param {HeadersInit} headers Additional headers
+  * @param {AxiosRequestConfig} axios Axios options
   */
-  async upload<D=any>(url: string,body?:FormData,headers?: HeadersInit): Promise<D> {
+  async upload<D=any>(url: string,body?:FormData,axios?: AxiosRequestConfig): Promise<D> {
     try {
       await this.validateToken();
-      const response = await fetch(`${Portalnesia.API_URL}/${this.version}${url}`,{
-        method:"POST",
-        body,
-        headers:this.getFetchOpts(true,headers),
-        mode:'cors'
-      })
-      const r = await response.json() as ResponseData<D>;
-      if(!response.ok) {
-        throw new PortalnesiaError(r)
-      }
+      const opt = this.getAxiosOpts(true,axios);
+      const response = await this.axios.post<ResponseData<D>>(`${Portalnesia.API_URL}/${this.version}${url}`,body,opt);
+
+      const r = response.data;
+      if(r.error) throw new PortalnesiaError(r);
       return r.data;
     } catch(e) {
       const err = this.catchError(e);
@@ -153,112 +145,104 @@ export default class Portalnesia extends EventEmitter {
     }
   }
  
-  private async validateToken(force?:boolean) {
+  private async validateToken(force?:boolean,autoRefreshToken=true) {
     if(!this.tokens) {
       if(!force) throw new PortalnesiaError("Missing token");
     } else {
-      if(this.tokens.isExpired()) {
-        await this.oauth.refreshToken();
+      if(this.tokens.isExpired() && autoRefreshToken) {
+        const token = await this.oauth.refreshToken();
+        this.setToken(token);
       }
     }
+    return Promise.resolve();
   }
 
-  private catchError(e: any) {
+  /**
+   * @private
+   * @internal
+   * @param {any} e Error
+   * @returns {PortalnesiaError} PortalnesiaError
+   */
+  catchError<D>(e: any): PortalnesiaError {
     if(e instanceof PortalnesiaError) return e;
-    if(e?.data?.isResponseError) {
-        const payload = e?.data?.payload;
-        payload.name="OAuth2";
-        return new PortalnesiaError(payload)
-    } else return new PortalnesiaError(e?.message,"Token error")
+    if(e?.response) {
+      const err = e as AxiosError<ResponseData<D>>;
+      if(axios.isCancel(err)) {
+        return new PortalnesiaError("Canceled")
+      }
+      if(err?.code === 'ECONNABORTED') {
+        return new PortalnesiaError("Connection timeout")
+      }
+      if(err.response?.data) {
+        return new PortalnesiaError(err.response.data,undefined,undefined,err.response.status);
+      }
+    }
+    return new PortalnesiaError(e?.message,"Token error")
   }
  
-  private getFetchOpts(withUpload?:boolean,options?: HeadersInit) {
-    if(!this.tokens || this.tokens.isExpired()) throw new PortalnesiaError("Missing token");
+  private getAxiosOpts(withUpload?:boolean,axios?: AxiosRequestConfig) {
     const token = this.tokens
-    const config: HeadersInit = {
-      ...(this.options.request?.headers ? {...this.options.request.headers} : {}),
-      ...options,
-      ...(withUpload ? {
-          'Content-Type':'multipart/form-data'
-      } : {}),
-      'Accept-Encoding':'gzip,deflate,br',
-      'Accept':'application/json',
-      'User-Agent':`Portalnesia JS v${version}`,
-      'Authorization': `Bearer ${token.token.access_token}`,
-      'PN-Client-Id': this.options.client_id,
+    const config: AxiosRequestConfig = {
+      ...axios,
+      headers:{
+        ...axios?.headers,
+        ...(withUpload ? {
+          'Content-type':'multipart/form-data'
+        } : {}),
+        'Accept':'application/json',
+        'X-SDK-Version':`Portalnesia JS v${version}`,
+        ...(token ? {'Authorization': `Bearer ${token.token.access_token}`} : {}),
+        'PN-Client-Id': this.options.client_id,
+      }
     }
     return config;
   }
-  private async get<D>(url: string,body?:any,headers?: HeadersInit) {
+  private async get<D>(url: string,body?:any,axios?: AxiosRequestConfig) {
     try {
-      const fullUrl = `${url}${body ? `?${qs.stringify(body)}` : ''}`
-      const header = this.getFetchOpts(false,headers);
-      const response = await fetch(fullUrl,{
-        method:"GET",
-        headers:header,
-        mode:'cors'
-      })
-      const r = await response.json() as ResponseData<D>;
-      if(!response.ok) {
-        throw new PortalnesiaError(r)
-      }
+      const opt = this.getAxiosOpts(false,axios);
+      const response = await this.axios.get<ResponseData<D>>(url,opt);
+
+      const r = response.data;
+      if(r.error) throw new PortalnesiaError(r);
       return r.data;
     } catch(e) {
       const err = this.catchError(e);
       throw err;
     }
   }
-  private async delete<D>(url: string,body?:any,headers?: HeadersInit) {
+  private async delete<D>(url: string,body?:any,axios?: AxiosRequestConfig) {
     try {
-      const fullUrl = `${url}${body ? `?${qs.stringify(body)}` : ''}`
-      const header = this.getFetchOpts(false,headers);
-      const response = await fetch(fullUrl,{
-        method:"DELETE",
-        headers:header,
-        mode:'cors'
-      })
-      const r = await response.json() as ResponseData<D>;
-      if(!response.ok) {
-        throw new PortalnesiaError(r)
-      }
+      const opt = this.getAxiosOpts(false,axios);
+      const response = await this.axios.delete<ResponseData<D>>(url,opt);
+
+      const r = response.data;
+      if(r.error) throw new PortalnesiaError(r);
       return r.data;
     } catch(e) {
       const err = this.catchError(e);
       throw err;
     }
   }
-  private async put<D>(url: string,body?:Record<string,any>,headers?: HeadersInit) {
+  private async put<D>(url: string,body?:Record<string,any>,axios?: AxiosRequestConfig) {
     try {
-      const header = this.getFetchOpts(false,headers);
-      const response = await fetch(url,{
-        method:"PUT",
-        headers:header,
-        ...(body ? {body:JSON.stringify(body)} : {}),
-        mode:'cors'
-      })
-      const r = await response.json() as ResponseData<D>;
-      if(!response.ok) {
-        throw new PortalnesiaError(r)
-      }
+      const opt = this.getAxiosOpts(false,axios);
+      const response = await this.axios.put<ResponseData<D>>(url,body,opt);
+
+      const r = response.data;
+      if(r.error) throw new PortalnesiaError(r);
       return r.data;
     } catch(e) {
       const err = this.catchError(e);
       throw err;
     }
   }
-  private async post<D>(url: string,body?:any,headers?: HeadersInit) {
+  private async post<D>(url: string,body?:any,axios?: AxiosRequestConfig) {
     try {
-      const header = this.getFetchOpts(false,headers);
-      const response = await fetch(url,{
-        method:"POST",
-        headers:header,
-        ...(body ? {body:JSON.stringify(body)} : {}),
-        mode:'cors'
-      })
-      const r = await response.json() as ResponseData<D>;
-      if(!response.ok) {
-        throw new PortalnesiaError(r)
-      }
+      const opt = this.getAxiosOpts(false,axios);
+      const response = await this.axios.post<ResponseData<D>>(url,body,opt);
+
+      const r = response.data;
+      if(r.error) throw new PortalnesiaError(r);
       return r.data;
     } catch(e) {
       const err = this.catchError(e);
