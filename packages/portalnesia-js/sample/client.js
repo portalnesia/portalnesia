@@ -1,19 +1,35 @@
 const http = require('http');
 const fs = require('fs');
 const nodePath = require('path');
+const ejs = require('ejs');
 
 const server = http.createServer(async function(req,res){
-  if(req.url === '/') {
+  const fullUrl = `http://localhost${req.url}`
+
+  if(req.url === '/' || req.url.startsWith('/?')) {
     res.writeHead(200,{'Content-type':'text/html'})
-    const html = await fs.promises.readFile(nodePath.resolve('./browser/index.html'));
+    const url = new URL(fullUrl);
+    
+    let output='Click button on the left to show the output here'
+
+    if(url.search.length > 0) {
+      output={};
+      const params = url.searchParams;
+      params.forEach((value,key)=>{
+        output[key]=value;
+      })
+      output = JSON.stringify(output,undefined,2);
+    }
+    const filePath = nodePath.resolve(`./browser/index.ejs`);
+    const html = await ejs.renderFile(filePath,{output})
     res.write(html);
     res.end();
   } 
   /*else if(req.url === '/callback') {
 
   }*/
-  else if(req.url === '/Portalnesia.min.js') {
-    const file = await fs.promises.readFile(__dirname+'/node_modules/@portalnesia/portalnesia-js/dist/umd/Portalnesia.min.js');
+  else if(req.url.startsWith('/portalnesia') || req.url.startsWith('/pn-')) {
+    const file = await fs.promises.readFile(__dirname+'/node_modules/@portalnesia/portalnesia-js/dist/umd'+req.url);
     res.writeHead(200,{'Content-type':'text/javascript','Cache-Control':'no-cache'});
     res.end(file);
   }

@@ -31,18 +31,31 @@
       <!-- Nav Bar -->
       <div class="container-fluid">
         <!-- Title -->
-        <div class="row">
+        <div class="row main-portalnesia">
           <div class="col-lg-6">
             <h1 class="big-heading">Portalnesia API Example</h1>
             <p>Edit app.js</p>
+            <p class="category">OAuth2</p>
+            <button id="set-token-btn" class="btn btn-outline-light btn-lg download-button" type="button">Set Token From Saved Token</button>
             <button id="auth-btn" class="btn btn-outline-light btn-lg download-button" type="button">Get Authorize URL</button>
+            <button id="token-btn" class="btn btn-outline-light btn-lg download-button" type="button">Get Access Token</button>
+            <button id="openid-btn" class="btn btn-outline-light btn-lg download-button disabled" type="button">Get User from OpenId</button>
+            <button id="refresh-token" class="btn btn-outline-light btn-lg download-button oauth disabled" type="button">Refresh Token</button>
+            <button id="revoke-token" class="btn btn-outline-light btn-lg download-button oauth disabled" type="button">Revoke Token</button>
+
+            <div class='category'>
+              <p class="category">Blog</p>
+              <button id="blog-list-btn" class="btn btn-outline-light btn-lg download-button disabled" type="button">Get Blog List</button>
+              <button id="blog-detail-btn" class="btn btn-outline-light btn-lg download-button disabled" type="button">Get Blog Detail</button>
+            </div>
           </div>
           <div class="col-lg-6">
             <div class="form-group">
               <label for="output">Output</label>
-              <textarea class="form-control" id="output" rows="15" readonly></textarea>
+              <textarea class="form-control" id="output" rows="15" readonly><% if(output) { %><%= output %><% } %></textarea>
             </div>
             <button id="reset-btn" class="btn btn-outline-light btn-md" type="button">Reset</button>
+            <button id="copy-btn" class="btn btn-outline-light btn-md" type="button">Copy</button>
           </div>
         </div>
     </div>
@@ -59,6 +72,7 @@
         <p style="color:#8F8F8F">© Copyright 2022 Portalnesia</p>  
       </div>
     </footer>
+    <script async src="pn-blog.min.js"></script>
     <script defer src="app.js"></script>
   </body>
 </html>
