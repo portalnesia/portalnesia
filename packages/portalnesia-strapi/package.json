@@ -1,0 +1,43 @@
+{
+  "name": "@portalnesia/portalnesia-strapi",
+  "version": "1.0.0",
+  "description": "Strapi Javascript Plugin for Internal Portalnesia",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "files": [
+    "./README.md",
+    "dist",
+    "!src",
+    ".gitignore"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/portalnesia/portalnesia.git"
+  },
+  "keywords": [
+    "strapi",
+    "api",
+    "cms"
+  ],
+  "author": "Putu Aditya <aditya@portalnesia.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/portalnesia/portalnesia/issues"
+  },
+  "homepage": "https://github.com/portalnesia/portalnesia#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "js-cookie": "^3.0.1",
+    "qs": "^6.11.0"
+  },
+  "devDependencies": {
+    "@types/js-cookie": "^3.0.2",
+    "@types/node": "^18.0.4",
+    "@types/qs": "^6.9.7",
+    "typescript": "^4.7.4"
+  }
+}
