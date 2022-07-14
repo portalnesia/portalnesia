@@ -2,7 +2,7 @@ import slugify,{Options} from './slugify'
 import slugTransliterate,{Options as TransliterateOption} from './transliterate'
 export type {Options as SlugifyOptions} from './slugify'
 export type {Options as TransliterateOption} from './transliterate'
-import {v4 as uuidv4,v5 as uuidv5} from 'uuid'
+import { nanoid as nanoidOri } from 'nanoid'
 
 export type Without<T,K> = {
     [L in Exclude<keyof T,K>]: T[L]
@@ -425,12 +425,20 @@ export function transliterate(string: string, options: TransliterateOption) {
 export function stripslashes(string: string) {
     return string.replace(/\\/gim,'');
 }
-export function uuid(text?: string) {
-    let uid = uuidv4();
-    if(text) {
-        uid = uuidv5(text.toLowerCase(),uid);
-    }
-    return uid;
+/**
+ * @deprecated Use {@link nanoid | nanoid} instead
+ * @param {String?} text UUID v4
+ * @returns {string} UUID
+ */
+export function uuid(text?: string): string {
+  return nanoid();
+}
+/**
+ * Generate UUID
+ * @returns {string} UUID
+ */
+export function nanoid(): string {
+  return nanoidOri();
 }
 export function isTrue(whatToCheck: unknown) {
     if(typeof whatToCheck === 'string' && ['true','1'].indexOf(whatToCheck) > -1) return true;

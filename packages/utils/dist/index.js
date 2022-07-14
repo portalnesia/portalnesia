@@ -12,10 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isTrue = exports.uuid = exports.stripslashes = exports.transliterate = exports.validateEmail = exports.number_format_short = exports.firstToUpper = exports.isTwitterURL = exports.isURL = exports.randomInt = exports.extractMeta = exports.listToMatrix = exports.adddesc = exports.addslashes = exports.separateNumber = exports.acronym = exports.insertElementAfter = exports.time_ago = exports.numberFormat = exports.generateRandom = exports.number_size = exports.toBlob = exports.copyTextBrowser = exports.slugFormat = exports.splice = exports.truncate = exports.replaceAt = exports.urlToDomain = exports.firstLetter = exports.jsStyles = exports.ucwords = exports.parseURL = exports.specialHTML = exports.stripHTML = exports.escapeHTML = exports.monthNamesEn = exports.monthNames = exports.isEmptyObj = exports.clean = void 0;
+exports.isTrue = exports.nanoid = exports.uuid = exports.stripslashes = exports.transliterate = exports.validateEmail = exports.number_format_short = exports.firstToUpper = exports.isTwitterURL = exports.isURL = exports.randomInt = exports.extractMeta = exports.listToMatrix = exports.adddesc = exports.addslashes = exports.separateNumber = exports.acronym = exports.insertElementAfter = exports.time_ago = exports.numberFormat = exports.generateRandom = exports.number_size = exports.toBlob = exports.copyTextBrowser = exports.slugFormat = exports.splice = exports.truncate = exports.replaceAt = exports.urlToDomain = exports.firstLetter = exports.jsStyles = exports.ucwords = exports.parseURL = exports.specialHTML = exports.stripHTML = exports.escapeHTML = exports.monthNamesEn = exports.monthNames = exports.isEmptyObj = exports.clean = void 0;
 const slugify_1 = __importDefault(require("./slugify"));
 const transliterate_1 = __importDefault(require("./transliterate"));
-const uuid_1 = require("uuid");
+const nanoid_1 = require("nanoid");
 /**
  * Clean text format
  * @param {string} text: text to clean
@@ -452,14 +452,23 @@ function stripslashes(string) {
     return string.replace(/\\/gim, '');
 }
 exports.stripslashes = stripslashes;
+/**
+ * @deprecated Use {@link nanoid | nanoid} instead
+ * @param {String?} text UUID v4
+ * @returns {string} UUID
+ */
 function uuid(text) {
-    let uid = (0, uuid_1.v4)();
-    if (text) {
-        uid = (0, uuid_1.v5)(text.toLowerCase(), uid);
-    }
-    return uid;
+    return nanoid();
 }
 exports.uuid = uuid;
+/**
+ * Generate UUID
+ * @returns {string} UUID
+ */
+function nanoid() {
+    return (0, nanoid_1.nanoid)();
+}
+exports.nanoid = nanoid;
 function isTrue(whatToCheck) {
     if (typeof whatToCheck === 'string' && ['true', '1'].indexOf(whatToCheck) > -1)
         return true;

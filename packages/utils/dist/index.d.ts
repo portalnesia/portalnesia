@@ -120,5 +120,15 @@ export declare function number_format_short<D = {
 export declare function validateEmail(email: string): boolean;
 export declare function transliterate(string: string, options: TransliterateOption): string;
 export declare function stripslashes(string: string): string;
+/**
+ * @deprecated Use {@link nanoid | nanoid} instead
+ * @param {String?} text UUID v4
+ * @returns {string} UUID
+ */
 export declare function uuid(text?: string): string;
+/**
+ * Generate UUID
+ * @returns {string} UUID
+ */
+export declare function nanoid(): string;
 export declare function isTrue(whatToCheck: unknown): boolean;
