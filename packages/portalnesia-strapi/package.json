@@ -1,6 +1,6 @@
 {
   "name": "@portalnesia/portalnesia-strapi",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Strapi Javascript Plugin for Internal Portalnesia",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,7 +10,7 @@
   },
   "files": [
     "./README.md",
-    "dist",
+    "dist/**/*",
     "!src",
     ".gitignore"
   ],
