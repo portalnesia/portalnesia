@@ -20,6 +20,11 @@
     "dist",
     "README.md"
   ],
+  "typedoc": {
+    "entryPoint": "./src/index.ts",
+    "readmeFile": "./README.md",
+    "displayName": "Portalnesia Dayjs Plugin"
+  },
   "author": "Putu Aditya <aditya@portalnesia.com>",
   "license": "MIT",
   "bugs": {

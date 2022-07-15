@@ -1,7 +1,3 @@
-/**
- * @module
- * Portalnesia Blog API
- */
 import { ResponsePagination, ISeen,IDate } from "@api/base";
 import BaseApi from "../base";
 import {BasicUser} from '@src/api/user'

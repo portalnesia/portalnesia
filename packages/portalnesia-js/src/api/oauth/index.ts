@@ -1,12 +1,21 @@
 /**
- * @module
- * Portalnesia OAuth API
+ * @internal
  */
+
 import PortalnesiaError from "@src/exception/PortalnesiaException";
 import Portalnesia from "@src/server";
 import BaseApi from "../base";
+/**
+ * @module
+ */
 import {ModuleOptions,AuthorizationCode,ClientCredentials,Token, AccessToken} from 'simple-oauth2'
+/**
+ * @module
+ */
 import pkceChallenge from 'pkce-challenge'
+/**
+ * @module
+ */
 import IdTokenVerifier from 'idtoken-verifier'
 
 export type IScopes = "basic" | "openid" |  "email" |  "blog" |  "comments" |  "chord" | "files" |  "geodata" |  "likes" |  "messages" |  "quiz" |  "toko" |  "twibbon" |  "thread" |  "url-shortener" | "user"
@@ -32,6 +41,11 @@ export type TokenOptions = {
     scope?: string[]
 }
 export type RevokeTokenOptions = {refresh_token?:string,access_token?:string}
+
+export type GeneratePKCEResults = {
+  code_challenge: string,
+  code_verifier: string
+}
 
 export type TokenResponse = {
     access_token: string,
@@ -104,13 +118,7 @@ export default class OAuth extends BaseApi {
      * `authorization_code`
      * 
      * Generate Code Verifier and Code Challenge
-     * @returns {{
-     *  code_challenge: string,
-     *  code_verifier: string
-     * }} {
-     *  code_challenge: string,
-     *  code_verifier: string
-     * }
+     * @returns {GeneratePKCEResults} PKCE Results
      * 
      */
     generatePKCE(): {

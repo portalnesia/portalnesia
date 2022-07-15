@@ -1,4 +1,12 @@
+
+
+/**
+ * @module
+ */
 import dayjs from "dayjs";
+/**
+ * @module
+ */
 import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime);
 
@@ -9,7 +17,7 @@ declare module 'dayjs' {
   export interface Dayjs {
     /**
      * Get `time_ago` date from now
-     * @template D {format: string,timestamp: number}
+     * @typeParam D {format: string,timestamp: number}
      * @requires relativeTime plugins
      * @returns {D} {format: string,timestamp: number}
      * @example

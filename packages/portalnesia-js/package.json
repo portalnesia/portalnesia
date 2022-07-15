@@ -25,6 +25,10 @@
     "type": "git",
     "url": "git+https://github.com/portalnesia/portalnesia.git"
   },
+  "typedoc": {
+    "entryPoint": "src/index.ts",
+    "displayName": "Portalnesia NodeJs SDK"
+  },
   "keywords": [
     "api",
     "wrapper",

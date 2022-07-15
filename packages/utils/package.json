@@ -24,6 +24,10 @@
     "javascript",
     "typescript"
   ],
+  "typedoc": {
+    "entryPoint": "./src/index.ts",
+    "displayName": "Portalnesia Utils"
+  },
   "author": "Putu Aditya <aditya@portalnesia.com>",
   "license": "MIT",
   "bugs": {

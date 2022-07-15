@@ -1,7 +1,3 @@
-/**
- * @module
- * Portalnesia API
- */
 import { PortalnesiaOptions,ResponseData,ApiErrorTypes } from "@src/api/base";
 import axiosStatic,{ AxiosInstance,AxiosError,CancelTokenSource, AxiosRequestConfig } from "axios";
 import getAxiosInstance from "@api/base/axios";
@@ -12,6 +8,7 @@ import CatchApiError from '@src/exception/ApiException'
 import { AccessToken } from "simple-oauth2";
 
 export * from '@api/base'
+export * from './api/oauth'
 
 /**
  * Portalnesia Client Instance
@@ -95,8 +92,8 @@ class Portalnesia {
 
   /**
    * Send request to Portalnesia
-   * @template D Response Data for type D
-   * @template B Body request
+   * @typeParam D Response Data for type D
+   * @typeParam B Body request
    * @param {string} method HTTP method
    * @param {string} url Portalnesia API URL
    * @param {B} body body/url params
@@ -217,6 +214,6 @@ class Portalnesia {
     }
   }
 }
-//const a = new Portalnesia({client_id:"SFAFS"})
-//a.token
+
+export {OAuth}
 export default Portalnesia;

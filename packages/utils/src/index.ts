@@ -1,8 +1,8 @@
+import { nanoid as nanoidOri } from 'nanoid'
 import slugify,{Options} from './slugify'
 import slugTransliterate,{Options as TransliterateOption} from './transliterate'
 export type {Options as SlugifyOptions} from './slugify'
 export type {Options as TransliterateOption} from './transliterate'
-import { nanoid as nanoidOri } from 'nanoid'
 
 export type Without<T,K> = {
     [L in Exclude<keyof T,K>]: T[L]

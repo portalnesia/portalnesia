@@ -33,6 +33,11 @@
   "keywords": [
     "react-native"
   ],
+  "typedoc": {
+    "entryPoint": "./src/index.ts",
+    "readmeFile": "./README.md",
+    "displayName": "Portalnesia React Native Core"
+  },
   "author": {
     "name": "Putu Aditya",
     "email": "aditya@portalnesia.com"

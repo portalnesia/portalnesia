@@ -61,8 +61,8 @@ export default class BaseApi {
 
   /**
    * Send request to Portalnesia
-   * @template D Response Data for type D
-   * @template B Body request
+   * @typeParam D Response Data for type D
+   * @typeParam B Body request
    * @param {string} method HTTP method
    * @param {string} url Portalnesia API URL
    * @param {B} body body/url params
@@ -75,7 +75,7 @@ export default class BaseApi {
 
   /**
    * 
-   * @template D Response Data for type D
+   * @typeParam D Response Data for type D
    * @param {string} url Portalnesia API URL
    * @param {FormData} body body/url params
    * @param {AxiosRequestConfig} axiosOptions optional axios options

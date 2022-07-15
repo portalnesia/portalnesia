@@ -1,6 +1,6 @@
 {
   "name": "@portalnesia/portalnesia-strapi",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Strapi Javascript Plugin for Internal Portalnesia",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,6 +18,11 @@
     "type": "git",
     "url": "git+https://github.com/portalnesia/portalnesia.git"
   },
+  "typedoc": {
+    "entryPoint": "./src/index.ts",
+    "readmeFile": "./README.md",
+    "displayName": "Portalnesia Strapi"
+  },
   "keywords": [
     "strapi",
     "api",
@@ -31,6 +36,7 @@
   "homepage": "https://github.com/portalnesia/portalnesia#readme",
   "dependencies": {
     "axios": "^0.27.2",
+    "dayjs": "^1.11.3",
     "js-cookie": "^3.0.1",
     "qs": "^6.11.0"
   },

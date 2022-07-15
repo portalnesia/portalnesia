@@ -1,0 +1,34 @@
+{
+  "name": "portalnesia",
+  "version": "1.0.0",
+  "description": "Portalnesia Monorepo",
+  "directories": {
+    "doc": "docs",
+    "packages": "packages"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs": "typedoc --name Portalnesia --readme ./README.md --excludePrivate --out ./typedoc --entryPointStrategy packages ."
+  },
+  "workspaces": [
+    "packages/dayjs-plugins",
+    "packages/portalnesia-js",
+    "packages/portalnesia-strapi",
+    "packages/utils"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/portalnesia/portalnesia.git"
+  },
+  "author": "Putu Aditya <aditya@portalnesia.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/portalnesia/portalnesia/issues"
+  },
+  "homepage": "https://github.com/portalnesia/portalnesia#readme",
+  "devDependencies": {
+    "typedoc": "^0.23.7",
+    "typedoc-plugin-rename-defaults": "^0.6.4",
+    "typescript": "^4.7.4"
+  }
+}
