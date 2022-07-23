@@ -118,7 +118,7 @@ const defaults: Required<PortalnesiaOptions> = {
   prefix: "/api",
   store: {
     key: "portalnesia_jwt",
-    cookieOptions: { path: "/",secure: process.env.NODE_ENV === 'production',sameSite:'lax' },
+    cookieOptions: { path: "/",secure: process.env.NODE_ENV === 'production',sameSite:'lax',expires:7 },
   },
   axiosOptions: {},
 };
@@ -245,10 +245,8 @@ constructor(options: PortalnesiaOptions) {
     const params = qs.parse(window.location.search, {
         ignoreQueryPrefix: true,
     });
-    if (params.access_token)
-      access_token = params.access_token as string;
     const { user, ...rest } = await this.authRequest("get", `/auth/portalnesia/callback`, {
-      params: { access_token },
+      params,
     });
     this.setToken({ user, ...rest });
     this._user = user;
@@ -283,7 +281,7 @@ constructor(options: PortalnesiaOptions) {
       return response.data;
     }
     catch (error) {
-      const e = error;
+      const e = error as AxiosError;
       if (!e.response) {
         throw {
           data: null,
@@ -331,7 +329,7 @@ constructor(options: PortalnesiaOptions) {
       return response.data;
     }
     catch (error) {
-      const e = error;
+      const e = error as AxiosError
       if (!e.response) {
         throw {
             data: null,
