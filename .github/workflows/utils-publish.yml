@@ -1,0 +1,35 @@
+name: Utils Publish to NPM
+
+on:
+  push:
+    branches:
+      - main
+    paths: 'packages/utils/**'
+
+jobs:
+  utils-test:
+    runs-on: ubuntu-18.04
+
+    defaults:
+      run:
+        working-directory: 'packages/utils'
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install dependencies and build 🔧
+        run: npm install --legacy-peer-deps && npm run build
+      - name: Publish package on NPM 📦
+        run: npm publish --access=public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM }}
