@@ -42,11 +42,10 @@ export const monthNamesEn=["January", "February", "March", "April", "May", "June
  * @param {boolean} withQuote if true, quote or double quote not escaped
  * @returns escaped string
  */
-export const escapeHTML=(text: string,withQuote: boolean): string=>{
+export const escapeHTML=(text: string,withQuote: boolean = true): string=>{
     if(typeof text!=='string' || text.match(/\S/) === null) return '';
     let map: {[key: string]: string};
-    const quote=withQuote||true;
-    if(quote) {
+    if(withQuote) {
       map  = {
         '&': '&amp;',
         '<': '&lt;',
@@ -144,7 +143,7 @@ export const firstLetter=function(text: string,number?: number){
     let str=text.toLowerCase().replace(/\b([a-z])(\S*)/g, function(a,b) {
         return b.toUpperCase();
     }).replace(/\s/g,"");
-    if(typeof number==='number') str=str.substring(0,number);
+    if(typeof number==='number') return str.substring(0,number);
     else return str;
 } 
 
