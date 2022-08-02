@@ -1,0 +1,34 @@
+name: Dayjs Plugins CI
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths: 'packages/dayjs-plugins/**'
+
+jobs:
+  dayjs-test:
+    runs-on: ubuntu-18.04
+
+    defaults:
+      run:
+        working-directory: 'packages/dayjs-plugins'
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+      - name: Install Depedencies
+        run: npm install --legacy-peer-deps
+      - name: Build
+        run: npm run build
+      - name: Test Dayjs Plugins
+        run: npm test
