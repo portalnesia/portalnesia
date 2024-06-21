@@ -108,6 +108,7 @@ typings/
 *.csr
 *-credentials.json
 *-pn.ts
+*-pn.txt
 *.exp
 sample/config.json
 sample/**/*/config.js

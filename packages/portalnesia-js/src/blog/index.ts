@@ -2,9 +2,9 @@
  * @module
  * Portalnesia Blog API
  */
-import { ResponsePagination, ISeen,IDate } from "@api/base";
-import BaseApi from "../base";
-import {BasicUser} from '@src/api/user'
+import { ResponsePagination, ISeen,IDate } from "../base";
+import BaseApi from "../base/base";
+import {BasicUser} from '../user'
 
 export const BLOG_CATEGORY = ["uncategory","tutorial","blog"];
 
@@ -48,7 +48,7 @@ export default class Blog extends BaseApi {
      * @returns object {@link ResponsePagination | Pagination} of {@link BasicBlog | Blog}
      */
     async getAllBlog(page=1,per_page=15): Promise<ResponsePagination<BasicBlog>> {
-        return await this.request<ResponsePagination<BasicBlog>>('get',this.getFullUrl('/blog'),{page,per_page});
+        return await this.request<ResponsePagination<BasicBlog>>('get',"/blog",{page,per_page});
     }
 
     /**
@@ -57,7 +57,7 @@ export default class Blog extends BaseApi {
      * @returns object {@link IBlog | Blog Response}
      */
     async getBlog(slug: string): Promise<IBlog> {
-        return await this.request<IBlog>('get',this.getFullUrl(`/blog/${slug}`));
+        return await this.request<IBlog>('get',`/blog/${slug}`);
     }
 }
 

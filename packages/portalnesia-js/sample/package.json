@@ -6,7 +6,8 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "@portalnesia/portalnesia-js": "link:../"
+    "@portalnesia/portalnesia-js": "link:../",
+    "ejs": "^3.1.6"
   },
   "scripts": {
     "server": "node server.js",

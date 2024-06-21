@@ -1,0 +1,22 @@
+diff --git a/node_modules/simple-oauth2/lib/authorization-code-grant-type.js b/node_modules/simple-oauth2/lib/authorization-code-grant-type.js
+index 5f7a75a..15bdd02 100644
+--- a/node_modules/simple-oauth2/lib/authorization-code-grant-type.js
++++ b/node_modules/simple-oauth2/lib/authorization-code-grant-type.js
+@@ -1,6 +1,4 @@
+ 'use strict';
+-
+-const { URL } = require('url');
+ const querystring = require('querystring');
+ const AccessToken = require('./access-token');
+ const GrantTypeParams = require('./grant-type-params');
+@@ -29,8 +27,8 @@ module.exports = class AuthorizationCode {
+       response_type: 'code',
+       [this.#config.client.idParamName]: this.#config.client.id,
+     };
+-
+-    const url = new URL(this.#config.auth.authorizePath, this.#config.auth.authorizeHost);
++    const Url = globalThis?.URL;
++    const url = new Url(this.#config.auth.authorizePath, this.#config.auth.authorizeHost);
+     const parameters = new GrantTypeParams(this.#config.options, baseParams, params);
+ 
+     return `${url}?${querystring.stringify(parameters.toObject())}`;
